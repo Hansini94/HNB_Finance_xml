@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ScenarioOne extends Model
+{
+    use HasFactory;
+
+    protected $table = 'scenario_1_trans_details';
+    public $timestamps = true;
+
+    protected $fillable = [
+        'id',
+        'account_type',
+        'rentity_id',
+        'rentity_branch',
+        'submission_code',
+        'report_code',
+        'entity_reference',
+        'submission_date',
+        'currency_code_local',
+        'transactionnumber',
+        'internal_ref_number',
+        'transaction_location',
+        'transaction_description',
+        'date_transaction',
+        'value_date',
+        'transmode_code',
+        'amount_local',
+        'from_funds_code',
+        'from_entity_name',
+        'from_entity_incorporation_legal_form',
+        'from_entity_incorporation_number',
+        'from_entity_business',
+        'from_entity_address_type',
+        'from_entity_address',
+        'from_entity_address_city',
+        'from_entity_address_country_code',
+        'from_entity_incorporation_country_code',
+        'from_entity_director_gender',
+        'from_entity_director_title',
+        'from_entity_director_first_name',
+        'from_entity_director_last_name',
+        'from_entity_director_birthdate',
+        'from_entity_director_ssn',
+        'from_entity_director_passport_number',
+        'from_entity_director_passport_country',
+        'from_entity_director_nationality1',
+        'from_entity_director_residence',
+        'from_entity_director_address_type',
+        'from_entity_director_address',
+        'from_entity_director_city',
+        'from_entity_director_country_code',
+        'from_entity_director_occupation',
+        'from_entity_director_role',
+        'from_country',
+        'to_funds_code',
+        'to_account_institution_name',
+        'to_swift',
+        'to_non_bank_institution',
+        'to_branch',
+        'to_account',
+        'to_currency_code',
+        'to_personal_account_type',
+        'to_entity_name',
+        'to_entity_incorporation_legal_form',
+        'to_entity_incorporation_number',
+        'to_entity_business',
+        'to_entity_address_type',
+        'to_entity_address',
+        'to_entity_city',
+        'to_entity_country_code',
+        'to_entity_incorporation_country_code',
+        'to_entity_director_gender',
+        'to_entity_director_title',
+        'to_entity_director_first_name',
+        'to_entity_director_last_name',
+        'to_entity_director_birthdate',
+        'to_entity_director_ssn',
+        'to_entity_director_passport_number',
+        'to_entity_director_passport_country',
+        'to_entity_director_nationality1',
+        'to_entity_director_residence',
+        'to_entity_director_address_type',
+        'to_entity_director_address',
+        'to_entity_director_city',
+        'to_entity_director_country_code',
+        'to_entity_director_occupation',
+        'to_entity_director_role',
+        'to_status_code',
+        'to_country',
+        'report_indicator',
+        'from_person_gender',
+        'from_person_title',
+        'from_person_first_name',
+        'from_person_last_name',
+        'from_person_birthdate',
+        'from_person_ssn',
+        'from_person_nationality1',
+        'from_person_residence',
+        'from_person_address_type',
+        'from_person_address',
+        'from_person_city',
+        'from_person_country_code',
+        'from_person_occupation',
+        'to_signatory_is_primary',
+        'to_signatory_gender',
+        'to_signatory_title',
+        'to_signatory_first_name',
+        'to_signatory_last_name',
+        'to_signatory_birthdate',
+        'to_signatory_ssn',
+        'to_signatory_nationality1',
+        'to_signatory_residence',
+        'to_signatory_address_type',
+        'to_signatory_address',
+        'to_signatory_city',
+        'to_signatory_country_code',
+        'to_signatory_occupation',
+        'to_signatory_role',
+        'status',
+        'is_delete',
+        'xml_gen_status',
+        'created_at',
+        'updated_at'
+    ];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+}
+
+

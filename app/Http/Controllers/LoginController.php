@@ -38,7 +38,7 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
         
-        if (Auth::guard('front-access')->attempt(['email' => $request->email, 'password' => $request->password, 'type' => 'W','status' => 'Y'])) {
+        if (Auth::guard('front-access')->attempt(['email' => $request->email, 'password' => $request->password])) {
             
             $request->session()->regenerate();
             

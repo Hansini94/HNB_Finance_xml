@@ -127,9 +127,9 @@
                                             <tr>
                                                 <th>{{ __('user.no') }}</th>
                                                 <th>{{ __('user.name') }}</th>
+                                                <th>{{ __('user.last_name') }}</th>
                                                 <th>{{ __('user.email') }}</th>
-                                                <th>{{ __('user.role') }}</th>
-                                                <th>{{ __('user.office_name') }}</th>
+                                                <th>{{ __('user.role') }}</th>                                                
                                                 <th>{{ __('user.edit') }}</th>
                                                 <th width="100px">{{ __('user.status') }}</th>
                                                 <th width="100px">{{ __('user.is_delete') }}</th>
@@ -182,8 +182,12 @@
                             name: 'id'
                         },
                         {
-                            data: 'name',
-                            name: 'name'
+                            data: 'first_name',
+                            name: 'first_name'
+                        },
+                        {
+                            data: 'last_name',
+                            name: 'last_name'
                         },
                         {
                             data: 'email',
@@ -193,10 +197,7 @@
                             data: 'role',
                             name: 'role'
                         },
-                        {
-                            data: 'office_name_en',
-                            name: 'office_name_en'
-                        },
+                        
                         {
                             data: 'edit',
                             name: 'edit',

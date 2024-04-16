@@ -41,8 +41,8 @@ class UserController extends Controller
     {
         //echo "aaa";
         if ($request->ajax()) {
-            $data = User::select(array('users.id','users.name','users.email','users.status'))
-                        ->where('users.is_delete', '0')->orderBy('users.id', 'DESC');
+            $data = User::select(array('users.id','users.first_name','users.last_name','users.email','users.status'))
+                        ->where('users.is_delete', '0')->orderBy('users.id', 'ASC');
             //var_dump($data); exit();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -97,7 +97,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required',
+            'first_name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirmpassword',
             'roles' => 'required',
@@ -155,7 +155,7 @@ class UserController extends Controller
     {
        $id = $request->id;
         $this->validate($request, [
-            'name' => 'required',
+            'first_name' => 'required',
             'email' => 'required|email|unique:users,email,' . $id,
             'password' => 'same:confirm-password',
             'roles' => 'required',

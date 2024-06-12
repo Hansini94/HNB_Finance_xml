@@ -14,7 +14,11 @@ use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 
 use App\Http\Controllers\LoginController;
 
-//backend 
+use App\Http\Controllers\ScenarioOneController;
+use App\Http\Controllers\ScenarioOneAllController;
+use App\Http\Controllers\EmployeeDetailController;
+
+//backend
 Route::get('/register', [RegisteredUserController::class, 'create'])
     ->middleware('guest')
     ->name('register');
@@ -77,13 +81,23 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('changestatus-user/{id}', [UserController::class, 'activation'])->name('changestatus-user');
     Route::get('blockuser/{id}', [UserController::class, 'block'])->name('blockuser');
     Route::post('checkEmailAvailability', [UserController::class, 'checkEmailAvailability'])->name('checkEmailAvailability');
-    Route::resource('products', ProductController::class);
+    // Route::resource('products', ProductController::class);
 
-    Route::get('complain-category', [ComplainCategoryController::class, 'index'])->name('complain-category');
-    Route::post('new-category', [ComplainCategoryController::class, 'store'])->name('new-category');
-    Route::get('complain-category-list', [ComplainCategoryController::class, 'list'])->name('complain-category-list');
-    Route::get('/edit-category/{id}', [ComplainCategoryController::class, 'edit'])->name('edit-category');
-    Route::put('save-complain-category', [ComplainCategoryController::class, 'update'])->name('save-complain-category');
-    Route::get('/status-category/{id}', [ComplainCategoryController::class, 'activation'])->name('status-category');
+    //scenario 1 first xml generation
+    Route::get('scenario-one-list', [ScenarioOneController::class, 'list'])->name('scenario-one-list');
+    Route::post('generate-xml', [ScenarioOneController::class, 'generate_xml'])->name('generate-xml');
+    Route::get('fetch-last-detail', [ScenarioOneController::class,'fetchLastDetail'])->name('fetch-last-detail');
+
+    //scenario 1 old xml generation
+    Route::get('scenario-one-all-list', [ScenarioOneAllController::class, 'list'])->name('scenario-one-all-list');
+    Route::get('/edit-scenario-one-all/{id}', [ScenarioOneAllController::class, 'edit'])->name('edit-scenario-one-all');
+    Route::put('save-scenario-one-all', [ScenarioOneAllController::class, 'update'])->name('save-scenario-one-all');
+    Route::get('changestatus-scenario-one-all/{id}', [ScenarioOneAllController::class, 'activation'])->name('changestatus-scenario-one-all');
+    Route::get('blockscenarioone/{id}', [ScenarioOneAllController::class, 'block'])->name('blockscenarioone');
+    Route::post('generate-old-xml', [ScenarioOneAllController::class, 'generate_xml'])->name('generate-old-xml');
+
+    Route::get('employee', [EmployeeDetailController::class, 'index'])->name('employee');
+    Route::put('save-employee-details', [EmployeeDetailController::class, 'update'])->name('save-employee-details');
+
 
 });

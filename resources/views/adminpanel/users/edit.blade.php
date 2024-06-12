@@ -92,14 +92,191 @@
                             @method('PUT')
                             <fieldset>
                                 <div class="row">
-                                    <section class="col col-4">
-                                        <label class="label">{{ __('user.name') }} <span style=" color: red;">*</span> </label>
-                                        <label class="input">
-                                            <input type="text" id="name" name="name" required value="{{ $user->name }}">
-                                        </label>
-                                    </section>
-                                    
-                               
+                                        <section class="col col-4">
+                                          <label class="label">{{ __('Gender') }}</label>
+                                            <select id="gender" name="gender" class="select2" >
+                                              <option value="Male" {{ $user->gender == 'Male' ? "selected" : "" }}>Male</option>
+                                              <option value="Female" {{ $user->gender == 'Female' ? "selected" : "" }}>Female</option>
+                                              <option value="Other" {{ $user->gender == 'Other' ? "selected" : "" }}>Other</option>
+                                            </select>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">{{ __('Title') }}</label>
+                                            <select id="title" name="title" class="select2" >
+                                              <option value="Mr" {{ $user->title == 'Mr' ? "selected" : "" }}>Mr</option>
+                                              <option value="Ms" {{ $user->title == 'Ms' ? "selected" : "" }}>Ms</option>
+                                              <option value="Mrs" {{ $user->title == 'Mrs' ? "selected" : "" }}>Mrs</option>
+                                              <option value="Miss" {{ $user->title == 'Miss' ? "selected" : "" }}>Miss</option>
+                                              <option value="Dr" {{ $user->title == 'Dr' ? "selected" : "" }}>Dr</option>
+                                            </select>
+                                        </section>
+                                        <div class="clearfix"></div>
+                                        <section class="col col-4">
+                                          <label class="label">First Name<span style=" color: red;">*</span> </label>
+                                          <label class="input">
+                                            <input type="text" id="first_name" name="first_name" required value="{{ $user->first_name }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Middle Name</label>
+                                          <label class="input">
+                                            <input type="text" id="middle_name" name="middle_name"  value="{{ $user->middle_name }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Last Name<span style=" color: red;">*</span> </label>
+                                          <label class="input">
+                                            <input type="text" id="last_name" name="last_name" required value="{{ $user->last_name }}">
+                                          </label>
+                                        </section>
+                                        <div class="clearfix"></div>
+                                        <section class="col col-4">
+                                          <label class="label">Prefix</label>
+                                          <label class="input">
+                                            <input type="text" id="prefix" name="prefix" value="{{ $user->prefix }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Birthdate<span style=" color: red;">*</span> </label>
+                                          <label class="input">
+                                            <input type="date" id="birthdate" name="birthdate" required value="{{ $user->birthdate }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Birth Place</label>
+                                          <label class="input">
+                                            <input type="text" id="birth_place" name="birth_place" value="{{ $user->birth_place }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Mothers Name</label>
+                                          <label class="input">
+                                            <input type="text" id="mothers_name" name="mothers_name" value="{{ $user->mothers_name }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Alias</label>
+                                          <label class="input">
+                                            <input type="text" id="alias" name="alias" value="{{ $user->alias }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">SSN</label>
+                                          <label class="input">
+                                            <input type="text" id="ssn" name="ssn" value="{{ $user->ssn }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Passport Number</label>
+                                          <label class="input">
+                                            <input type="text" id="passport_number" name="passport_number" value="{{ $user->passport_number }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Passport Country</label>
+                                          <label class="input">
+                                            <input type="text" id="passport_country" name="passport_country" value="{{ $user->passport_country }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">ID Number</label>
+                                          <label class="input">
+                                            <input type="text" id="id_number" name="id_number" value="{{ $user->id_number }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Nationality 1</label>
+                                          <label class="input">
+                                            <input type="text" id="nationality1" name="nationality1" required value="{{ $user->nationality1 }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Nationality 2</label>
+                                          <label class="input">
+                                            <input type="text" id="nationality2" name="nationality2" value="{{ $user->nationality2 }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Nationality 3</label>
+                                          <label class="input">
+                                            <input type="text" id="nationality3" name="nationality3" value="{{ $user->nationality3 }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Residence</label>
+                                          <label class="input">
+                                            <input type="text" id="residence" name="residence" value="{{ $user->residence }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Contact No</label>
+                                          <label class="input">
+                                            <input type="tel" id="phones" name="phones" value="{{ $user->phones }}">
+                                          </label>
+                                        </section>
+                                        <div class="clearfix"></div>
+                                        <section class="col col-4">
+                                          <label class="label">Address Type</label>
+                                          <label class="input">
+                                            <input type="text" id="address_type" name="address_type" value="{{ $user->address_type }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Address</label>
+                                          <label class="input">
+                                            <input type="text" id="address" name="address" value="{{ $user->address }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">City</label>
+                                          <label class="input">
+                                            <input type="text" id="city" name="city" value="{{ $user->city }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Country Code</label>
+                                          <label class="input">
+                                            <input type="text" id="country_code" name="country_code" value="{{ $user->country_code }}">
+                                          </label>
+                                        </section>
+                                        <div class="clearfix"></div>
+                                        <section class="col col-4">
+                                          <label class="label">Occupation</label>
+                                          <label class="input">
+                                            <input type="text" id="occupation" name="occupation" value="{{ $user->occupation }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Deceased</label>
+                                          <label class="input">
+                                            <input type="text" id="deceased" name="deceased" value="{{ $user->deceased }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Deceased Date</label>
+                                          <label class="input">
+                                            <input type="date" id="deceased_date" name="deceased_date" value="{{ $user->deceased_date }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Tax Number</label>
+                                          <label class="input">
+                                            <input type="text" id="tax_number" name="tax_number" value="{{ $user->tax_number }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Tax Registration Number</label>
+                                          <label class="input">
+                                            <input type="text" id="tax_reg_numebr" name="tax_reg_numebr" value="{{ $user->tax_reg_number }}">
+                                          </label>
+                                        </section>
+                                        <section class="col col-4">
+                                          <label class="label">Source of Wealth</label>
+                                          <label class="input">
+                                            <input type="text" id="source_of_wealth" name="source_of_wealth" value="{{ $user->source_of_wealth }}">
+                                          </label>
+                                        </section>
+
                                     <section class="col col-4">
                                         <label class="label">{{ __('user.email') }} <span style=" color: red;">*</span> </label>
                                         <label class="input">
@@ -107,7 +284,7 @@
                                         </label>
                                     </section>
 
-                                   
+
                                     <?php
                                     $uval = "";
                                     foreach ($userRole as $rol => $uval) {
@@ -150,7 +327,7 @@
                                         </label>
                                     </section>
                                 </div>
-                               
+
                             </fieldset>
                             <footer>
                                 <input type="hidden" name="id" value="{{ $user->id }}">

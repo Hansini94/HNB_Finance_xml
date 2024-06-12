@@ -89,11 +89,193 @@
                   <input type="hidden" name="lang" value="{{ $lang }}">
                 <div class="row">
                   <section class="col col-4">
-                    <label class="label">Name<span style=" color: red;">*</span> </label>
+                    <label class="label">{{ __('Gender') }}</label>
+                      <select id="gender" name="gender" class="select2" >
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">{{ __('Title') }}</label>
+                      <select id="title" name="title" class="select2" >
+                        <option value="Mr">Mr</option>
+                        <option value="Ms">Ms</option>
+                        <option value="Mrs">Mrs</option>
+                        <option value="Miss">Miss</option>
+                        <option value="Dr">Dr</option>
+                      </select>
+                  </section>
+                </div>
+                <div class="row">
+                  <section class="col col-4">
+                    <label class="label">First Name<span style=" color: red;">*</span> </label>
                     <label class="input">
-                      <input type="text" id="name" name="name" required value="">
+                      <input type="text" id="first_name" name="first_name" required value="">
                     </label>
                   </section>
+                  <section class="col col-4">
+                    <label class="label">Middle Name</label>
+                    <label class="input">
+                      <input type="text" id="middle_name" name="middle_name"  value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Last Name<span style=" color: red;">*</span> </label>
+                    <label class="input">
+                      <input type="text" id="last_name" name="last_name" required value="">
+                    </label>
+                  </section>
+                </div>
+                <div class="row">
+                  <section class="col col-4">
+                    <label class="label">Prefix</label>
+                    <label class="input">
+                      <input type="text" id="prefix" name="prefix" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Birthdate<span style=" color: red;">*</span> </label>
+                    <label class="input">
+                      <input type="date" id="birthdate" name="birthdate" required value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Birth Place</label>
+                    <label class="input">
+                      <input type="text" id="birth_place" name="birth_place" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Mothers Name</label>
+                    <label class="input">
+                      <input type="text" id="mothers_name" name="mothers_name" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Alias</label>
+                    <label class="input">
+                      <input type="text" id="alias" name="alias" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">SSN</label>
+                    <label class="input">
+                      <input type="text" id="ssn" name="ssn" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Passport Number</label>
+                    <label class="input">
+                      <input type="text" id="passport_number" name="passport_number" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Passport Country</label>
+                    <label class="input">
+                      <input type="text" id="passport_country" name="passport_country" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">ID Number</label>
+                    <label class="input">
+                      <input type="text" id="id_number" name="id_number" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Nationality 1</label>
+                    <label class="input">
+                      <input type="text" id="nationality1" name="nationality1" required value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Nationality 2</label>
+                    <label class="input">
+                      <input type="text" id="nationality2" name="nationality2" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Nationality 3</label>
+                    <label class="input">
+                      <input type="text" id="nationality3" name="nationality3" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Residence</label>
+                    <label class="input">
+                      <input type="text" id="residence" name="residence" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Contact No</label>
+                    <label class="input">
+                      <input type="tel" id="phones" name="phones" value="">
+                    </label>
+                  </section>
+                  <div class="clearfix"></div>
+                  <section class="col col-4">
+                    <label class="label">Address Type</label>
+                    <label class="input">
+                      <input type="text" id="address_type" name="address_type" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Address</label>
+                    <label class="input">
+                      <input type="text" id="address" name="address" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">City</label>
+                    <label class="input">
+                      <input type="text" id="city" name="city" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Country Code</label>
+                    <label class="input">
+                      <input type="text" id="country_code" name="country_code" value="">
+                    </label>
+                  </section>
+                  <div class="clearfix"></div>
+                  <section class="col col-4">
+                    <label class="label">Occupation</label>
+                    <label class="input">
+                      <input type="text" id="occupation" name="occupation" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Deceased</label>
+                    <label class="input">
+                      <input type="text" id="deceased" name="deceased" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Deceased Date</label>
+                    <label class="input">
+                      <input type="date" id="deceased_date" name="deceased_date" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Tax Number</label>
+                    <label class="input">
+                      <input type="text" id="tax_number" name="tax_number" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Tax Registration Number</label>
+                    <label class="input">
+                      <input type="text" id="tax_reg_numebr" name="tax_reg_numebr" value="">
+                    </label>
+                  </section>
+                  <section class="col col-4">
+                    <label class="label">Source of Wealth</label>
+                    <label class="input">
+                      <input type="text" id="source_of_wealth" name="source_of_wealth" value="">
+                    </label>
+                  </section>
+                </div>
+                <div class="row">
                   <section class="col col-4">
                     <label class="label">{{ __('user.email') }} <span style=" color: red;">*</span> </label>
                     <label class="input">
@@ -103,7 +285,7 @@
                   </section>
                   <section class="col col-4">
                     <label class="label">{{ __('user.role') }} <span style=" color: red;">*</span></label>
-                
+
                       <select id="roles" name="roles" class="select2" required>
                         <option value=""></option>
                         @foreach ($roles as $x => $val)
@@ -111,24 +293,12 @@
                         @endforeach
                       </select>
                       <i></i>
-                   
+
                   </section>
-                  <!-- <section class="col col-4">
-                    <label class="label">{{ __('user.name_si') }} <span style=" color: red;">*</span> </label>
-                    <label class="input">
-                      <input type="text" id="name_si" name="name_si" required value="">
-                    </label>
-                  </section>
-                  <section class="col col-4">
-                    <label class="label">{{ __('user.name_ta') }} <span style=" color: red;">*</span> </label>
-                    <label class="input">
-                      <input type="text" id="name_ta" name="name_ta" required value="">
-                    </label>
-                  </section> -->
                 </div>
 
                 <div class="row">
-                 
+
 
                   <section class="col col-4">
                     <label class="label">{{ __('user.password') }} <span style=" color: red;">*</span> </label>
@@ -144,8 +314,8 @@
                   </section>
                 </div>
                 <div class="row">
-                  
-                 
+
+
                 </div>
 
                 <!-- <div class="row">
@@ -252,6 +422,17 @@
                 }
             });
         });
+
+        // Get today's date
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+
+        today = yyyy + '-' + mm + '-' + dd;
+
+        // Set max attribute of the birthdate input field to today's date
+        document.getElementById("birthdate").setAttribute("max", today);
     </script>
   </x-slot>
 </x-app-layout>

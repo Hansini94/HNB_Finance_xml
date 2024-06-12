@@ -11,7 +11,7 @@ return [
     'add_new'=> 'ADD NEW',
     'view_all'=> 'VIEW ALL',
     'title' => 'User',
-    'name' => 'Name English',
+    'name' => 'First Name',
     'email' => 'Email',
     'role' => 'Role',
     'password' => 'Password',
@@ -32,5 +32,5 @@ return [
     'status' => 'Activation',
     'is_delete' => 'Delete',
     'change_password' => 'Do you want to change the password?',
-    'office_name' => 'Office Name English',
+    'last_name' => 'Last Name',
 ];

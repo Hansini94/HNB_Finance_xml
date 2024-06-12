@@ -41,6 +41,6 @@ class GeneratexmlController extends Controller
                 ->make(true);
         }
 
-        return view('adminpanel.generate_xml.list');
+        return view('adminpanel.generate_xml.xml');
     }
 }

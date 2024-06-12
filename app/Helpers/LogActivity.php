@@ -52,7 +52,7 @@ class LogActivity
         }
     }
 
-    public static function addToLogXMLGen($subject,$from_date,$to_date,$xml_type,$xml_gen_status)
+    public static function addToLogXMLGen($subject,$from_date,$to_date,$fileName,$xml_type,$scenario_no,$xml_gen_status)
     {
 		$ip = "";
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
@@ -77,6 +77,9 @@ class LogActivity
     	$log['user_id'] = auth()->check() ? auth()->user()->id : 1;
         $log['from_date'] = $from_date;
         $log['to_date'] = $to_date;
+        $log['filename'] = $fileName;
+        $log['gen_date'] = date('Y-m-d H:i:s');
+        $log['scenario_no'] = $scenario_no;
 		$log['status'] = 'Y';
         $log['xml_gen_status'] = $xml_gen_status;
     	LogXMLGenActivity::create($log);

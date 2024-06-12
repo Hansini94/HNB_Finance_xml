@@ -13,6 +13,6 @@ class LogXMLGenActivity extends Model
     public $timestamps = true;
 
     protected $fillable = [
-        'xml_type','subject', 'url','method', 'ip', 'user_id','from_date','to_date', 'status','xml_gen_status'
+        'xml_type','subject', 'url','method', 'ip', 'user_id','from_date','to_date','filename', 'gen_date','scenario_no', 'status','xml_gen_status'
     ];
 }

@@ -65,11 +65,11 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="row cms_top_btn_row" style="margin-left:auto;margin-right:auto;">
-                        <a href="{{ route('scenario-one-list') }}">
+                        <a href="{{ route('scenario-two-list') }}">
                             <button class="btn cms_top_btn top_btn_height ">{{ __('Generate XML') }}</button>
                         </a>
 
-                        <a href="{{ route('scenario-one-all-list') }}">
+                        <a href="{{ route('scenario-two-all-list') }}">
                             <button class="btn cms_top_btn top_btn_height cms_top_btn_active">{{ __('user.view_all') }}</button>
                         </a>
                     </div>
@@ -96,10 +96,10 @@
 
                         <!-- Widget ID (each widget will need unique ID)-->
 
-                        <div class="jarviswidget jarviswidget-color-darken" id="scenario_one" data-widget-editbutton="false">
+                        <div class="jarviswidget jarviswidget-color-darken" id="scenario_two" data-widget-editbutton="false">
                             <header>
                                 <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                                <h2>{{ __('Scenario One Transactions') }}</h2>
+                                <h2>{{ __('Scenario Two Transactions') }}</h2>
                             </header>
 
                             <!-- widget div-->
@@ -167,7 +167,7 @@
                     processing: true,
                     serverSide: true,
                     lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
-                    ajax: "{{ route('scenario-one-all-list') }}",
+                    ajax: "{{ route('scenario-two-all-list') }}",
                     columnDefs: [{
                             "defaultContent": "-",
                             "targets": "_all"
@@ -224,7 +224,7 @@
 
             });
 
-            $('#scenario_one').on('click', '.btn-delete', function(e) {
+            $('#scenario_two').on('click', '.btn-delete', function(e) {
                 event.preventDefault();
                 const url = $(this).attr('href');
                 var id = $(this).val();
@@ -235,7 +235,7 @@
                     buttons: ["Cancel", "Yes"],
                 }).then(function(value) {
                     if (value == true) {
-                        window.location.replace("blockscenarioone/" + id);
+                        window.location.replace("blockscenariotwo/" + id);
                     }
                 });
             });

@@ -1,4 +1,4 @@
-@can('scenario-one-all-delete')
+@can('scenario-five-all-delete')
  @if($status == '1')
    @php ($status_class ='fa fa-ban')
 

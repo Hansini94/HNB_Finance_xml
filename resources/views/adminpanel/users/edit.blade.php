@@ -137,9 +137,9 @@
                                           </label>
                                         </section>
                                         <section class="col col-4">
-                                          <label class="label">Birthdate<span style=" color: red;">*</span> </label>
+                                          <label class="label">Birthdate</label>
                                           <label class="input">
-                                            <input type="date" id="birthdate" name="birthdate" required value="{{ $user->birthdate }}">
+                                            <input type="date" id="birthdate" name="birthdate" value="{{ $user->birthdate }}">
                                           </label>
                                         </section>
                                         <section class="col col-4">
@@ -187,7 +187,7 @@
                                         <section class="col col-4">
                                           <label class="label">Nationality 1</label>
                                           <label class="input">
-                                            <input type="text" id="nationality1" name="nationality1" required value="{{ $user->nationality1 }}">
+                                            <input type="text" id="nationality1" name="nationality1" value="{{ $user->nationality1 }}">
                                           </label>
                                         </section>
                                         <section class="col col-4">
@@ -287,9 +287,9 @@
 
                                     <?php
                                     $uval = "";
-                                    foreach ($userRole as $rol => $uval) {
-                                        $uval = $uval;
-                                    }
+                                    // foreach ($userRole as $rol => $uval) {
+                                        $uval = $userRole->name;
+                                    // }
                                     ?>
 
                                     <section class="col col-4">

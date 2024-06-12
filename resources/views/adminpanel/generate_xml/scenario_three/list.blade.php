@@ -122,15 +122,15 @@
 
                     <div class="row cms_top_btn_row" style="margin-left:auto;margin-right:auto;">
 
-                        <a href="{{ route('scenario-one-list') }}">
+                        <a href="{{ route('scenario-three-list') }}">
 
                             <button class="btn cms_top_btn top_btn_height ">{{ __('Generate XML') }}</button>
 
                         </a>
 
-                        <a href="{{ route('scenario-one-all-list') }}">
+                        <a href="{{ route('scenario-three-all-list') }}">
 
-                            <button class="btn cms_top_btn top_btn_height cms_top_btn_active">{{ __('user.view_all') }}</button>
+                            <button class="btn cms_top_btn top_btn_height cms_top_btn_active">{{ __('View All') }}</button>
 
                         </a>
 
@@ -150,7 +150,7 @@
 
             @endif
             @if ($error = Session::get('error'))
-                <div class="alert alert-danger">
+                <div class="alert alert-warning">
                     <p>{{ $error }}</p>
                 </div>
             @endif
@@ -177,13 +177,13 @@
 
 
 
-                        <div class="jarviswidget jarviswidget-color-darken" id="scenario_one" data-widget-editbutton="false">
+                        <div class="jarviswidget jarviswidget-color-darken" id="scenario_three" data-widget-editbutton="false">
 
                             <header>
 
                                 <span class="widget-icon"> <i class="fa fa-table"></i> </span>
 
-                                <h2>{{ __('Scenario One Transactions') }}</h2>
+                                <h2>{{ __('Scenario Three Transactions') }}</h2>
 
                             </header>
 
@@ -219,7 +219,7 @@
 
                                             <div class="row cms_top_btn_row" style="margin-left:auto;margin-right:auto;">
 
-                                                <form action="{{ route('generate-xml') }}" method="POST">
+                                                <form action="{{ route('generate-xml-three') }}" method="POST">
 
                                                     @csrf
 
@@ -359,7 +359,7 @@
 
                     lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "All"] ],
 
-                    ajax: "{{ route('scenario-one-list') }}",
+                    ajax: "{{ route('scenario-three-list') }}",
 
                     columnDefs: [{
 
@@ -467,7 +467,7 @@
             //         var selectedScenarioType = this.value;
 
             //         // Fetch data based on selected scenario type
-            //         fetch('{{ route("fetch-last-detail") }}?scenario_type=' + selectedScenarioType)
+            //         fetch('{{ route("fetch-last-detail-three") }}?scenario_type=' + selectedScenarioType)
             //             .then(response => response.json())
             //             .then(data => {
             //                 // alert(data.to_date);

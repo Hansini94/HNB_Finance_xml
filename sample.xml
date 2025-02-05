@@ -1,0 +1,91 @@
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<report>
+<rentity_id>96</rentity_id>
+<submission_code>E</submission_code>
+<report_code>CTR</report_code>
+<entity_reference>02JAN-150242/20058006/4/1</entity_reference>
+<submission_date>2024-02-19T00:00:00</submission_date>
+<currency_code_local>LKR</currency_code_local>
+<reporting_person>
+<gender>M</gender>
+<title>Mr</title>
+<first_name>Dulip Ruwan</first_name>
+<last_name>Liyanage</last_name>
+<birthdate>1984-07-18T00:00:00</birthdate>
+<ssn>842001234V</ssn>
+<nationality1>LK</nationality1>
+<email>dulip.r@hnbfinance.lk</email>
+<occupation>Compliance-Manager</occupation>
+</reporting_person>
+<transaction>
+<transactionnumber>7814663</transactionnumber>
+<transaction_location>Kiribathgoda</transaction_location>
+<transaction_description>Cash deposit for Fixed Deposit</transaction_description>
+<date_transaction>2024-01-31T00:00:00</date_transaction>
+<transmode_code>BRCH</transmode_code>
+<amount_local>6000000.00</amount_local>
+<t_from_my_client>
+<from_funds_code>CASH</from_funds_code>
+<from_person>
+<gender>M</gender>
+<title>Mr</title>
+<first_name>WELAPPU NIDELAGE</first_name>
+<last_name>SOMAWATHI</last_name>
+<birthdate>1948-06-08T00:00:00</birthdate>
+<ssn>486602155V</ssn>
+<nationality1>LK</nationality1>
+<residence>LK</residence>
+<addresses>
+<address>
+<address_type>PERM</address_type>
+<address>NO.457,WARAGODA ESTATE,KELANIYA</address>
+<city>GAMPAHA</city>
+<country_code>LK</country_code>
+</address>
+</addresses>
+<occupation>Services:Others</occupation>
+</from_person>
+<from_country>LK</from_country>
+</t_from_my_client>
+<t_to_my_client>
+<to_funds_code>ELEC</to_funds_code>
+<to_account>
+<institution_name>HNB Finance PLC</institution_name>
+<swift>7904</swift>
+<non_bank_institution>true</non_bank_institution>
+<branch>Kiribathgoda</branch>
+<account>1706890/20058006/1/1</account>
+<currency_code>LKR</currency_code>
+<personal_account_type>TRDP</personal_account_type>
+<signatory>
+<is_primary>true</is_primary>
+<t_person>
+<gender>M</gender>
+<title>Mr</title>
+<first_name>WELAPPU NIDELAGE</first_name>
+<last_name>SOMAWATHI</last_name>
+<birthdate>1948-06-08T00:00:00</birthdate>
+<ssn>486602155V</ssn>
+<nationality1>LK</nationality1>
+<residence>LK</residence>
+<addresses>
+<address>
+<address_type>PERM</address_type>
+<address>NO.457,WARAGODA ESTATE,KELANIYA</address>
+<city>GAMPAHA</city>
+<country_code>LK</country_code>
+</address>
+</addresses>
+<occupation>Services:Others</occupation>
+</t_person>
+<role>ACHLD</role>
+</signatory>
+<status_code>ACTV</status_code>
+</to_account>
+<to_country>LK</to_country>
+</t_to_my_client>
+</transaction>
+<report_indicators>
+<indicator>CTR</indicator>
+</report_indicators>
+</report>

@@ -80,6 +80,11 @@
                 <p>{{ $message }}</p>
             </div>
             @endif
+            @if ($error = Session::get('error'))
+                <div class="alert alert-danger">
+                    <p>{{ $error }}</p>
+                </div>
+            @endif
             <section id="widget-grid" class="">
 
                 <!-- row -->
@@ -109,97 +114,21 @@
 
                                 <!-- widget content -->
                                 <div class="widget-body no-padding table-responsive">
-                                    <div class="row">
 
-                                        <div class="col-lg-12">
-
-                                            <div class="row cms_top_btn_row" style="margin-left:auto;margin-right:auto;">
-
-                                                <form action="{{ route('generate-old-xml') }}" method="POST">
-
-                                                    @csrf
-
-                                                  <div class="row">
-
-                                                    <!-- Add From Date input -->
-
-
-                                                    <div class="col-lg-3">
-                                                        <div class="">
-
-                                                            <label for="scenario_type" style="color: #5d5d5d; float: left; width: 100%; text-align: start;">Scenario Type:</label>
-                                                            <br>
-                                                            <div class="input-group">
-                                                                <select id="scenario_type" name="scenario_type" class="select2 form-control" required>
-                                                                    <option value="">Select Scenario Type</option>
-                                                                    <option value="Entity">Entity</option>
-                                                                    <option value="Person">Person</option>
-                                                                </select>
-                                                                <span class="input-group-addon"><i class="fa fa-caret-down"></i></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Add From Date input -->
-
-                                                    <div class="col-lg-3">
-
-                                                        <label for="from_date" style="color: #5d5d5d; float: left;">From Date:</label>
-
-                                                        <input type="date" id="from_date" name="from_date" class="form-control">
-
-                                                    </div>
-
-
-                                                    <!-- Add To Date input -->
-
-                                                    <div class="col-lg-3">
-
-                                                        <label for="to_date" style="color: #5d5d5d; float: left;">To Date:</label>
-
-                                                        <input type="date" id="to_date" name="to_date" class="form-control" >
-
-                                                    </div>
-
-
-
-                                                    <!-- Add Generate XML button -->
-
-                                                    <div class="col-lg-3">
-
-                                                        <label>&nbsp;</label> <!-- Spacer -->
-
-                                                        <button id="generate_xml" class="btn btn-primary" style="margin-top: 16px;">Generate XML</button>
-
-                                                    </div>
-
-                                                  </div>
-
-
-
-                                                </form>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
 
                                     <table class="table table-bordered data-table" width="100%">
                                         <thead>
                                             <tr>
                                                 <th>{{ __('No') }}</th>
-                                                <th>{{ __('Account Type') }}</th>
-                                                <th>{{ __('Transaction No') }}</th>
-                                                <th>{{ __('Internal Ref No') }}</th>
-                                                <th>{{ __('Transaction Location') }}</th>
-                                                <th>{{ __('Transaction Description') }}</th>
-                                                <th>{{ __('Date Transaction') }}</th>
-                                                <th>{{ __('Value Date') }}</th>
-                                                <th>{{ __('Transmode Code') }}</th>
+                                                <th>{{ __('Scenario Type') }}</th>
+                                                <th>{{ __('From Date') }}</th>
+                                                <th>{{ __('To Date') }}</th>
+                                                <th>{{ __('Generated On') }}</th>
+                                                <th>{{ __('Download XML') }}</th>
+                                                <th>{{ __('Download Excel') }}</th>
                                                 <th>{{ __('Edit') }}</th>
-                                                <th width="100px">{{ __('Status') }}</th>
-                                                {{-- <th width="100px">{{ __('Delete') }}</th> --}}
+                                                <th>{{ __('Delete') }}</th>
+                                                <th>{{ __('Success Submit') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -249,36 +178,41 @@
                             name: 'id'
                         },
                         {
-                            data: 'account_type',
-                            name: 'account_type'
+                            data: 'xml_type',
+                            name: 'xml_type'
                         },
                         {
-                            data: 'transactionnumber',
-                            name: 'transactionnumber'
+                            data: 'from_date',
+                            name: 'from_date'
                         },
                         {
-                            data: 'internal_ref_number',
-                            name: 'internal_ref_number'
+                            data: 'to_date',
+                            name: 'to_date'
                         },
                         {
-                            data: 'transaction_location',
-                            name: 'transaction_location'
+                            data: 'gen_date',
+                            name: 'gen_date'
                         },
                         {
-                            data: 'transaction_description',
-                            name: 'transaction_description'
+                            data: 'filename',
+                            name: 'filename',
+                            render: function(data, type, full, meta) {
+                                // Generate the base URL using Laravel's asset helper
+                                var baseURL = '{{ asset('storage/app/public/') }}';
+                                // Construct the full file path
+                                var filePath = baseURL + '/' + data;
+                                // Extract the file name from the data path
+                                var fileName = data.split('/').pop();
+
+                                // Create the download link
+                                return '<a href="' + filePath + '" download="' + fileName + '">Download XML</a>';
+                            }
                         },
                         {
-                            data: 'date_transaction',
-                            name: 'date_transaction'
-                        },
-                        {
-                            data: 'value_date',
-                            name: 'value_date'
-                        },
-                        {
-                            data: 'transmode_code',
-                            name: 'transmode_code'
+                            data: 'excel',
+                            name: 'excel',
+                            orderable: false,
+                            searchable: false
                         },
                         {
                             data: 'edit',
@@ -287,22 +221,20 @@
                             searchable: false
                         },
                         {
-                            data: 'activation',
-                            name: 'activation',
+                            data: 'blockscenarioonexml',
+                            name: 'blockscenarioonexml',
                             orderable: false,
                             searchable: false
                         },
-                        // {
-                        //     data: 'blockscenarioone',
-                        //     name: 'blockscenarioone',
-                        //     orderable: false,
-                        //     searchable: false
-                        // },
+                        {
+                            data: 'xmlsubmitted',
+                            name: 'xmlsubmitted',
+                            orderable: false,
+                            searchable: false
+                        }
                     ],
-                    dom: 'Blfrtip',
-                        buttons: [
-                            'copy', 'csv', 'excel', 'pdf', 'print'
-                        ]
+                    // Set default order by 'created_at' in descending order
+                    order: [[5, 'desc']]  // Assuming 'gen_date' is the 5th column (index 5)
                 });
 
             });
@@ -318,7 +250,7 @@
                     buttons: ["Cancel", "Yes"],
                 }).then(function(value) {
                     if (value == true) {
-                        window.location.replace("blockscenarioone/" + id);
+                        window.location.replace("blockscenarioonexml/" + id);
                     }
                 });
             });

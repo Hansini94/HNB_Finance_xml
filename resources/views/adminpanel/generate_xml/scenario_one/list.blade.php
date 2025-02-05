@@ -1,7 +1,5 @@
 @section('title', 'Generate XML')
 
-
-
 <x-app-layout>
 
     <x-slot name="header">
@@ -31,8 +29,6 @@
                 width: 95px;
 
             }
-
-
 
             #sparks li h5 {
 
@@ -68,8 +64,6 @@
 
             }
 
-
-
             #sparks li span {
 
                 color: #324b7d;
@@ -92,15 +86,11 @@
 
             }
 
-
-
             #sparks li h5:hover {
 
                 color: #999999;
 
             }
-
-
 
             #sparks li span:hover {
 
@@ -158,6 +148,11 @@
 
             </div>
 
+            @endif
+            @if ($error = Session::get('error'))
+                <div class="alert alert-danger">
+                    <p>{{ $error }}</p>
+                </div>
             @endif
 
             <section id="widget-grid" class="">
@@ -294,39 +289,7 @@
 
                                     </div>
 
-                                    <table class="table table-bordered data-table" width="100%">
 
-                                        <thead>
-
-                                            <tr>
-
-                                                <th>{{ __('No') }}</th>
-
-                                                <th>{{ __('Account Type') }}</th>
-
-                                                <th>{{ __('Transaction No') }}</th>
-
-                                                <th>{{ __('Internal Ref No') }}</th>
-
-                                                <th>{{ __('Transaction Location') }}</th>
-
-                                                <th>{{ __('Transaction Description') }}</th>
-
-                                                <th>{{ __('Date Transaction') }}</th>
-
-                                                <th>{{ __('Value Date') }}</th>
-
-                                                <th>{{ __('Transmode Code') }}</th>
-
-                                            </tr>
-
-                                        </thead>
-
-                                        <tbody>
-
-                                        </tbody>
-
-                                    </table>
 
 
 
@@ -416,9 +379,9 @@
 
                         {
 
-                            data: 'account_type',
+                            data: 'scenario_type',
 
-                            name: 'account_type'
+                            name: 'scenario_type'
 
                         },
 
@@ -495,48 +458,48 @@
             });
 
 
-            document.addEventListener('DOMContentLoaded', function () {
-                // Get the scenario type select element
-                var scenarioTypeSelect = document.getElementById('scenario_type');
+            //  document.addEventListener('DOMContentLoaded', function () {
+            //      // Get the scenario type select element
+            //      var scenarioTypeSelect = document.getElementById('scenario_type');
 
-                // Add change event listener
-                scenarioTypeSelect.addEventListener('change', function () {
-                    var selectedScenarioType = this.value;
+            //      // Add change event listener
+            //      scenarioTypeSelect.addEventListener('change', function () {
+            //          var selectedScenarioType = this.value;
 
-                    // Fetch data based on selected scenario type
-                    fetch('{{ route("fetch-last-detail") }}?scenario_type=' + selectedScenarioType)
-                        .then(response => response.json())
-                        .then(data => {
-                            // alert(data.to_date);
-                            if(data.to_date != undefined)
-                            {
-                                // alert("if");
-                                // Update the From Date input field with the fetched to_date value
-                                document.getElementById('from_date').value = data.to_date;
+            //          // Fetch data based on selected scenario type
+            //          fetch('{{ route("fetch-last-detail") }}?scenario_type=' + selectedScenarioType)
+            //              .then(response => response.json())
+            //              .then(data => {
+            //                  // alert(data.to_date);
+            //                  if(data.to_date != undefined)
+            //                  {
+            //                      // alert("if");
+            //                      // Update the From Date input field with the fetched to_date value
+            //                      document.getElementById('from_date').value = data.to_date;
 
-                                // Set readonly property to true
-                                document.getElementById('from_date').readOnly = true;
+            //                      // Set readonly property to true
+            //                      document.getElementById('from_date').readOnly = true;
 
 
-                                // Update the From Date input field with the fetched to_date value
-                                document.getElementById('to_date').min = data.to_date;
-                            }
-                            else{
-                                // alert("else");
-                                // Update the From Date input field with the fetched current date value
-                                // document.getElementById('from_date').value = new Date();
+            //                      // Update the From Date input field with the fetched to_date value
+            //                      document.getElementById('to_date').min = data.to_date;
+            //                  }
+            //                  else{
+            //                      // alert("else");
+            //                      // Update the From Date input field with the fetched current date value
+            //                      // document.getElementById('from_date').value = new Date();
 
-                                // Set readonly property to true
-                                document.getElementById('from_date').readOnly = false;
+            //                      // Set readonly property to true
+            //                      document.getElementById('from_date').readOnly = false;
 
-                                // Set the minimum date value of the To Date input field to an empty string
-                                document.getElementById('to_date').removeAttribute('min');
-                            }
-                            
-                        })
-                        .catch(error => console.error('Error:', error));
-                });
-            });
+            //                      // Set the minimum date value of the To Date input field to an empty string
+            //                      document.getElementById('to_date').removeAttribute('min');
+            //                  }
+
+            //              })
+            //              .catch(error => console.error('Error:', error));
+            //      });
+            //  });
 
             // Add an event listener to the Generate XML button
             document.getElementById('generate_xml').addEventListener('click', function() {

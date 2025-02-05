@@ -101,12 +101,16 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|same:confirmpassword',
             'roles' => 'required',
-           
+
         ]);
 
         $input = $request->all();
 
+
         $input['password'] = Hash::make($input['password']);
+        $roles = Role::where('name', $input['roles'])->first();
+
+        $input['role_id'] = $roles->id;
 
         $user = User::create($input);
         $user->assignRole($request->input('roles'));
@@ -140,7 +144,8 @@ class UserController extends Controller
         $id = decrypt($id);
         $user = User::find($id);
         $roles = Role::pluck('name', 'name')->all();
-        $userRole = $user->roles->pluck('name', 'name')->all();
+        $userRole = Role::select('name')->where('id', $user->role_id)->first();
+        
         return view('adminpanel.users.edit', compact('user', 'roles', 'userRole'));
     }
 
@@ -183,7 +188,7 @@ class UserController extends Controller
                 ->where('id', 8)
                 ->first();
 
-                
+
                     if($request->password == ''){
                         $request->password = 'Not changed';
                     }
@@ -192,9 +197,9 @@ class UserController extends Controller
                     $variableData = [$request->name,$request->email,$request->password];
 
                     $sms_body = str_ireplace($variables, $variableData, $smsitem->body_content_en);
-              
 
-              
+
+
         }
 
         \LogActivity::addToLog('User record '.$request->name.' updated('.$id.').');

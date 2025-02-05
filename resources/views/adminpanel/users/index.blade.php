@@ -135,9 +135,9 @@
                     </label>
                   </section>
                   <section class="col col-4">
-                    <label class="label">Birthdate<span style=" color: red;">*</span> </label>
+                    <label class="label">Birthdate</label>
                     <label class="input">
-                      <input type="date" id="birthdate" name="birthdate" required value="">
+                      <input type="date" id="birthdate" name="birthdate" value="">
                     </label>
                   </section>
                   <section class="col col-4">
@@ -185,7 +185,7 @@
                   <section class="col col-4">
                     <label class="label">Nationality 1</label>
                     <label class="input">
-                      <input type="text" id="nationality1" name="nationality1" required value="">
+                      <input type="text" id="nationality1" name="nationality1" value="">
                     </label>
                   </section>
                   <section class="col col-4">
@@ -285,7 +285,6 @@
                   </section>
                   <section class="col col-4">
                     <label class="label">{{ __('user.role') }} <span style=" color: red;">*</span></label>
-
                       <select id="roles" name="roles" class="select2" required>
                         <option value=""></option>
                         @foreach ($roles as $x => $val)

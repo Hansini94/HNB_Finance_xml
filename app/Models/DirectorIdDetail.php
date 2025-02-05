@@ -9,7 +9,7 @@ class DirectorIdDetail extends Model
 {
     use HasFactory;
 
-    protected $table = 'director_id_details';
+    protected $table = 'director_details';
     public $timestamps = true;
 
     protected $fillable = [
@@ -37,13 +37,6 @@ class DirectorIdDetail extends Model
         'is_delete'
     ];
 
-
-
-
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
 }
 
 

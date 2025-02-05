@@ -127,7 +127,8 @@
                                                 <th>{{ __('Download XML') }}</th>
                                                 <th>{{ __('Download Excel') }}</th>
                                                 <th>{{ __('Edit') }}</th>
-                                                {{-- <th width="100px">{{ __('Delete') }}</th> --}}
+                                                <th>{{ __('Delete') }}</th>
+                                                <th>{{ __('Success Submit') }}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -218,8 +219,22 @@
                             name: 'edit',
                             orderable: false,
                             searchable: false
+                        },
+                        {
+                            data: 'blockscenariothreexml',
+                            name: 'blockscenariothreexml',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'xmlsubmitted',
+                            name: 'xmlsubmitted',
+                            orderable: false,
+                            searchable: false
                         }
                     ],
+                    // Set default order by 'created_at' in descending order
+                    order: [[5, 'desc']]  // Assuming 'gen_date' is the 5th column (index 5)
                 });
 
             });
@@ -235,7 +250,7 @@
                     buttons: ["Cancel", "Yes"],
                 }).then(function(value) {
                     if (value == true) {
-                        window.location.replace("blockscenariothree/" + id);
+                        window.location.replace("blockscenariothreexml/" + id);
                     }
                 });
             });

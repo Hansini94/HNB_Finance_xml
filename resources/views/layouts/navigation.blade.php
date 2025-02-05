@@ -419,16 +419,8 @@
                 </li>
 
                 @endforeach
-
-
-
-
-
-
-
-
-
             </ul>
+            <p style="position: absolute;text-align:center;bottom: 15px;left: 20%;">Solution By <span><a href="https://www.tekgeeks.net/" target="_blank" style="color: orange; font-weight: 600;">TekGeeks</a></span></p>
 
         </nav>
 

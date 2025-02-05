@@ -317,117 +317,199 @@
                                                             <input type="text" id="from_account_incorporation_country_code" name="from_account_incorporation_country_code" required value="{{ $data->from_account_incorporation_country_code }}">
                                                             </label>
                                                         </section>
-                                                        <section class="col col-4">
-                                                            <label class="label">Director Gender <span style=" color: red;">*</span></label>
-                                                            <label class="input">
-                                                                <select id="from_account_director_gender" name="from_account_director_gender" class="select2" required>
-                                                                    <option value="F" {{ $data->from_account_director_gender == 'F' ? "selected" : "" }}>Female</option>
-                                                                    <option value="M" {{ $data->from_account_director_gender == 'M' ? "selected" : "" }}>Male</option>
-                                                                    <option value="O" {{ $data->from_account_director_gender == 'O' ? "selected" : "" }}>Other</option>
-                                                                </select>
-                                                            </label>
+                                                        @if (!empty($directors))
+
+                                                        @foreach ($directors as $index => $direct)
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">Director Gender <span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <select id="gender_{{ $index }}"
+                                                                        name="directors[{{ $index }}][gender]"
+                                                                        class="select2" required>
+                                                                        <option value="F"
+                                                                            {{ $direct->gender == 'F' ? 'selected' : '' }}>
+                                                                            Female</option>
+                                                                        <option value="M"
+                                                                            {{ $direct->gender == 'M' ? 'selected' : '' }}>
+                                                                            Male</option>
+                                                                        <option value="O"
+                                                                            {{ $direct->gender == 'O' ? 'selected' : '' }}>
+                                                                            Other</option>
+                                                                    </select>
+                                                                </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                            <label class="label">Director Title<span style=" color: red;">*</span></label>
-                                                            <label class="input">
-                                                                <select id="from_account_director_title" name="from_account_director_title" class="select2" >
-                                                                    <option value="Mr" {{ $data->from_account_director_title == 'Mr' ? "selected" : "" }}>Mr</option>
-                                                                    <option value="Ms" {{ $data->from_account_director_title == 'Ms' ? "selected" : "" }}>Ms</option>
-                                                                    <option value="Mrs" {{ $data->from_account_director_title == 'Mrs' ? "selected" : "" }}>Mrs</option>
-                                                                    <option value="Miss" {{ $data->from_account_director_title == 'Miss' ? "selected" : "" }}>Miss</option>
-                                                                    <option value="Dr" {{ $data->from_account_director_title == 'Dr' ? "selected" : "" }}>Dr</option>
-                                                                </select>
-                                                            </label>
+                                                                <label class="label">Director Title<span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <select id="title_{{ $index }}"
+                                                                        name="directors[{{ $index }}][title]"
+                                                                        class="select2">
+                                                                        <option value="Mr"
+                                                                            {{ $direct->title == 'Mr' ? 'selected' : '' }}>
+                                                                            Mr</option>
+                                                                        <option value="Ms"
+                                                                            {{ $direct->title == 'Ms' ? 'selected' : '' }}>
+                                                                            Ms</option>
+                                                                        <option value="Mrs"
+                                                                            {{ $direct->title == 'Mrs' ? 'selected' : '' }}>
+                                                                            Mrs</option>
+                                                                        <option value="Miss"
+                                                                            {{ $direct->title == 'Miss' ? 'selected' : '' }}>
+                                                                            Miss</option>
+                                                                        <option value="Dr"
+                                                                            {{ $direct->title == 'Dr' ? 'selected' : '' }}>
+                                                                            Dr</option>
+                                                                    </select>
+                                                                </label>
                                                             </section>
                                                             <div class="clearfix"></div>
                                                             <section class="col col-4">
-                                                                <label class="label">Director First Name <span style=" color: red;">*</span></label>
+                                                                <label class="label">Director First Name <span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_first_name" name="from_account_director_first_name" required value="{{ $data->from_account_director_first_name }}">
+                                                                    <input type="text"
+                                                                        id="first_name_{{ $index }}"
+                                                                        name="directors[{{ $index }}][first_name]"
+                                                                        required value="{{ $direct->first_name }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                                <label class="label">Director Last Name<span style=" color: red;">*</span></label>
+                                                                <label class="label">Director Last Name<span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_last_name" name="from_account_director_last_name" required value="{{ $data->from_account_director_last_name }}">
+                                                                    <input type="text"
+                                                                        id="last_name_{{ $index }}"
+                                                                        name="directors[{{ $index }}][last_name]"
+                                                                        required value="{{ $direct->last_name }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                                <label class="label">Director Birthdate<span style=" color: red;">*</span> </label>
+                                                                <label class="label">Director Birthdate<span
+                                                                        style=" color: red;">*</span> </label>
                                                                 <label class="input">
-                                                                <input type="date" id="from_account_director_birthdate" name="from_account_director_birthdate" required value="{{ $data->from_account_director_birthdate }}">
+                                                                    <input type="date"
+                                                                        id="birthdate_{{ $index }}"
+                                                                        name="directors[{{ $index }}][birthdate]"
+                                                                        required value="{{ $direct->birthdate }}">
                                                                 </label>
                                                             </section>
                                                             <div class="clearfix"></div>
                                                             <section class="col col-4">
-                                                                <label class="label">Director SSN<span style=" color: red;">*</span></label>
+                                                                <label class="label">Director SSN<span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_ssn" name="from_account_director_ssn" required value="{{ $data->from_account_director_ssn }}">
+                                                                    <input type="text"
+                                                                        id="ssn_{{ $index }}"
+                                                                        name="directors[{{ $index }}][ssn]"
+                                                                        required value="{{ $direct->ssn }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
                                                                 <label class="label">Director Passport Number</label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_passport_number" name="from_account_director_passport_number" value="{{ $data->from_account_director_passport_number }}">
+                                                                    <input type="text"
+                                                                        id="passport_number_{{ $index }}"
+                                                                        name="directors[{{ $index }}][passport_number]"
+                                                                        value="{{ $direct->passport_number }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
                                                                 <label class="label">Director Passport Country</label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_passport_country" name="from_account_director_passport_country" value="{{ $data->from_account_director_passport_country }}">
+                                                                    <input type="text"
+                                                                        id="passport_country_{{ $index }}"
+                                                                        name="directors[{{ $index }}][passport_country]"
+                                                                        value="{{ $direct->passport_country }}">
                                                                 </label>
                                                             </section>
-                                                            <div class="clearfix"></div>
                                                             <section class="col col-4">
                                                                 <label class="label">Director Nationality</label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_nationality1" name="from_account_director_nationality1" value="{{ $data->from_account_director_nationality1 }}">
+                                                                    <input type="text"
+                                                                        id="nationality1_{{ $index }}"
+                                                                        name="directors[{{ $index }}][nationality1]"
+                                                                        value="{{ $direct->nationality1 }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
                                                                 <label class="label">Director Residence</label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_residence" name="from_account_director_residence" value="{{ $data->from_account_director_residence }}">
-                                                                </label>
-                                                            </section>
-                                                            <section class="col col-4">
-                                                                <label class="label">Director Address Type<span style=" color: red;">*</span></label>
-                                                                <label class="input">
-                                                                <input type="text" id="from_account_director_address_type" name="from_account_director_address_type" required value="{{ $data->from_account_director_address_type }}">
+                                                                    <input type="text"
+                                                                        id="residence_{{ $index }}"
+                                                                        name="directors[{{ $index }}][residence]"
+                                                                        value="{{ $direct->residence }}">
                                                                 </label>
                                                             </section>
                                                             <div class="clearfix"></div>
                                                             <section class="col col-4">
-                                                                <label class="label">Director Address<span style=" color: red;">*</span></label>
+                                                                <label class="label">Director Address Type<span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_address" name="from_account_director_address" required value="{{ $data->from_account_director_address }}">
+                                                                    <input type="text"
+                                                                        id="address_type_{{ $index }}"
+                                                                        name="directors[{{ $index }}][address_type]"
+                                                                        required value="{{ $direct->address_type }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                                <label class="label">Director City<span style=" color: red;">*</span></label>
+                                                                <label class="label">Director Address<span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_city" name="from_account_director_city" required value="{{ $data->from_account_director_city }}">
+                                                                    <input type="text"
+                                                                        id="address_{{ $index }}"
+                                                                        name="directors[{{ $index }}][address]"
+                                                                        required value="{{ $direct->address }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                                <label class="label">Director Country Code<span style=" color: red;">*</span></label>
+                                                                <label class="label">Director City<span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_country_code" name="from_account_director_country_code" required value="{{ $data->from_account_director_country_code }}">
+                                                                    <input type="text"
+                                                                        id="city_{{ $index }}"
+                                                                        name="directors[{{ $index }}][city]"
+                                                                        required value="{{ $direct->city }}">
+                                                                </label>
+                                                            </section>
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">Director Country Code<span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="country_code_{{ $index }}"
+                                                                        name="directors[{{ $index }}][country_code]"
+                                                                        required value="{{ $direct->country_code }}">
                                                                 </label>
                                                             </section>
                                                             <div class="clearfix"></div>
                                                             <section class="col col-4">
                                                                 <label class="label">Director Occupation</label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_occupation" name="from_account_director_occupation" value="{{ $data->from_account_director_occupation }}">
+                                                                    <input type="text"
+                                                                        id="occupation_{{ $index }}"
+                                                                        name="directors[{{ $index }}][occupation]"
+                                                                        value="{{ $direct->occupation }}">
                                                                 </label>
                                                             </section>
                                                             <section class="col col-4">
-                                                                <label class="label">Director Role <span style=" color: red;">*</span></label>
+                                                                <label class="label">Director Role <span
+                                                                        style=" color: red;">*</span></label>
                                                                 <label class="input">
-                                                                <input type="text" id="from_account_director_role" name="from_account_director_role" required value="{{ $data->from_account_director_role }}">
+                                                                    <input type="text"
+                                                                        id="role_{{ $index }}"
+                                                                        name="directors[{{ $index }}][role]"
+                                                                        required value="{{ $direct->role }}">
                                                                 </label>
                                                             </section>
+                                                            <input type="hidden" id="id_{{ $index }}"
+                                                                name="directors[{{ $index }}][id]" required
+                                                                value="{{ $direct->id }}">
+                                                        @endforeach
+                                                    @endif
                                                             <section class="col col-4">
                                                                 <label class="label">Status Code<span style=" color: red;">*</span></label>
                                                                 <label class="input">
@@ -517,114 +599,186 @@
                                             <fieldset>
 
                                                 <div class="row">
-                                                    <h2 style="font-size: 17px; padding-left: 15px; padding-top: 4px;">
-                                                        Signatory Details
-                                                    </h2>
-                                                    <br>
-                                                    <section class="col col-4">
-                                                        <label class="label">Is Primary</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_is_primary" name="from_account_signatory_is_primary" value="{{ $data->from_account_signatory_is_primary }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Gender</label>
-                                                        <label class="input">
-                                                            <select id="from_account_signatory_gender" name="from_account_signatory_gender" class="select2" required>
-                                                                <option value="F" {{ $data->from_account_signatory_gender == 'F' ? "selected" : "" }}>Female</option>
-                                                                <option value="M" {{ $data->from_account_signatory_gender == 'M' ? "selected" : "" }}>Male</option>
-                                                                <option value="O" {{ $data->from_account_signatory_gender == 'O' ? "selected" : "" }}>Other</option>
-                                                            </select>
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Title</label>
-                                                        <label class="input">
-                                                            <select id="from_account_signatory_title" name="from_account_signatory_title" class="select2" >
-                                                                <option value="Mr" {{ $data->from_account_signatory_title == 'Mr' ? "selected" : "" }}>Mr</option>
-                                                                <option value="Ms" {{ $data->from_account_signatory_title == 'Ms' ? "selected" : "" }}>Ms</option>
-                                                                <option value="Mrs" {{ $data->from_account_signatory_title == 'Mrs' ? "selected" : "" }}>Mrs</option>
-                                                                <option value="Miss" {{ $data->from_account_signatory_title == 'Miss' ? "selected" : "" }}>Miss</option>
-                                                                <option value="Dr" {{ $data->from_account_signatory_title == 'Dr' ? "selected" : "" }}>Dr</option>
-                                                            </select>
-                                                        </label>
-                                                    </section>
-                                                    <div class="clearfix"></div>
-                                                    <section class="col col-4">
-                                                        <label class="label">First Name</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_first_name" name="from_account_signatory_first_name" value="{{ $data->from_account_signatory_first_name }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Last Name</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_last_name" name="from_account_signatory_last_name" value="{{ $data->from_account_signatory_last_name }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Birthdate <span style=" color: red;">*</span></label>
-                                                        <label class="input">
-                                                        <input type="date" id="from_account_signatory_birthdate" name="from_account_signatory_birthdate" required value="{{ $data->from_account_signatory_birthdate }}">
-                                                        </label>
-                                                    </section>
-                                                    <div class="clearfix"></div>
-                                                    <section class="col col-4">
-                                                        <label class="label">SSN</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_ssn" name="from_account_signatory_ssn" value="{{ $data->from_account_signatory_ssn }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Nationality</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_nationality1" name="from_account_signatory_nationality1" value="{{ $data->from_account_signatory_nationality1 }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Residence</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_residence" name="from_account_signatory_residence" value="{{ $data->from_account_signatory_residence }}">
-                                                        </label>
-                                                    </section>
-                                                    <div class="clearfix"></div>
-                                                    <section class="col col-4">
-                                                        <label class="label">Address Type</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_address_type" name="from_account_signatory_address_type" value="{{ $data->from_account_signatory_address_type }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Address</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_address" name="from_account_signatory_address" value="{{ $data->from_account_signatory_address }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">City</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_city" name="from_account_signatory_city" value="{{ $data->from_account_signatory_city }}">
-                                                        </label>
-                                                    </section>
-                                                    <div class="clearfix"></div>
-                                                    <section class="col col-4">
-                                                        <label class="label">Country Code</label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_country_code" name="from_account_signatory_country_code" value="{{ $data->from_account_signatory_country_code }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Occupation<span style=" color: red;">*</span></label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_occupation" name="from_account_signatory_occupation" required value="{{ $data->from_account_signatory_occupation }}">
-                                                        </label>
-                                                    </section>
-                                                    <section class="col col-4">
-                                                        <label class="label">Role<span style=" color: red;">*</span></label>
-                                                        <label class="input">
-                                                        <input type="text" id="from_account_signatory_role" name="from_account_signatory_role" required value="{{ $data->from_account_signatory_role }}">
-                                                        </label>
-                                                    </section>
+                                                    @if (!empty($signatories))
+                                                        @foreach ($signatories as $index => $signatory)
+                                                            <h2
+                                                                style="font-size: 17px; padding-left: 15px; padding-top: 4px;">
+                                                                Signatory Details : {{ $signatory->entity_type }}
+                                                            </h2>
+                                                            <div class="clearfix"></div>
+                                                            <br>
+                                                            <section class="col col-4">
+                                                                <label class="label">Is Primary</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="is_primary_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][title]"
+                                                                        value="{{ $signatory->is_primary }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Gender</label>
+                                                                <label class="input">
+                                                                    <select id="gender_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][gender]"
+                                                                        class="select2" required>
+                                                                        <option value="F"
+                                                                            {{ $signatory->gender == 'F' ? 'selected' : '' }}>
+                                                                            Female</option>
+                                                                        <option value="M"
+                                                                            {{ $signatory->gender == 'M' ? 'selected' : '' }}>
+                                                                            Male</option>
+                                                                        <option value="O"
+                                                                            {{ $signatory->gender == 'O' ? 'selected' : '' }}>
+                                                                            Other</option>
+                                                                    </select>
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Title</label>
+                                                                <label class="input">
+                                                                    <select id="title_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][title]"
+                                                                        class="select2">
+                                                                        <option value="Mr"
+                                                                            {{ $signatory->title == 'Mr' ? 'selected' : '' }}>
+                                                                            Mr</option>
+                                                                        <option value="Ms"
+                                                                            {{ $signatory->title == 'Ms' ? 'selected' : '' }}>
+                                                                            Ms</option>
+                                                                        <option value="Mrs"
+                                                                            {{ $signatory->title == 'Mrs' ? 'selected' : '' }}>
+                                                                            Mrs</option>
+                                                                        <option value="Miss"
+                                                                            {{ $signatory->title == 'Miss' ? 'selected' : '' }}>
+                                                                            Miss</option>
+                                                                        <option value="Dr"
+                                                                            {{ $signatory->title == 'Dr' ? 'selected' : '' }}>
+                                                                            Dr</option>
+                                                                    </select>
+                                                                </label>
+                                                            </section>
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">First Name</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="first_name_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][first_name]"
+                                                                        value="{{ $signatory->first_name }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Last Name</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="last_name_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][last_name]"
+                                                                        value="{{ $signatory->last_name }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Birthdate <span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <input type="date"
+                                                                        id="birthdate_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][birthdate]"
+                                                                        required value="{{ $signatory->birthdate }}">
+                                                                </label>
+                                                            </section>
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">SSN</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="ssn_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][ssn]"
+                                                                        value="{{ $signatory->ssn }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Nationality</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="nationality1_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][nationality1]"
+                                                                        value="{{ $signatory->nationality1 }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Residence</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="residence_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][residence]"
+                                                                        value="{{ $signatory->residence }}">
+                                                                </label>
+                                                            </section>
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">Address Type</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="address_type_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][address_type]"
+                                                                        value="{{ $signatory->address_type }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Address</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="address_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][address]"
+                                                                        value="{{ $signatory->address }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">City</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="city_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][city]"
+                                                                        value="{{ $signatory->city }}">
+                                                                </label>
+                                                            </section>
+                                                            <div class="clearfix"></div>
+                                                            <section class="col col-4">
+                                                                <label class="label">Country Code</label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="country_code_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][country_code]"
+                                                                        value="{{ $signatory->country_code }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Occupation<span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="occupation_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][occupation]"
+                                                                        required
+                                                                        value="{{ $signatory->occupation }}">
+                                                                </label>
+                                                            </section>
+                                                            <section class="col col-4">
+                                                                <label class="label">Role<span
+                                                                        style=" color: red;">*</span></label>
+                                                                <label class="input">
+                                                                    <input type="text"
+                                                                        id="role_{{ $index }}"
+                                                                        name="signatories[{{ $index }}][role]"
+                                                                        required value="{{ $signatory->role }}">
+                                                                </label>
+                                                            </section>
+                                                            <input type="hidden" id="id_{{ $index }}"
+                                                                name="signatories[{{ $index }}][id]" required
+                                                                value="{{ $signatory->id }}">
+                                                        @endforeach
+                                                    @endif
                                                     <div class="clearfix"></div>
                                                     <section class="col col-4">
                                                         <label class="label">Report Indicator <span style=" color: red;">*</span></label>

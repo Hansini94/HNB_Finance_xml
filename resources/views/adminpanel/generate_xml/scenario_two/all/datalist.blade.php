@@ -306,7 +306,7 @@
             $('#scenario_two').on('click', '.btn-delete', function(e) {
                 event.preventDefault();
                 const url = $(this).attr('href');
-                var id = $(this).val();
+                var ent_id = $(this).val();
                 swal({
                     title: 'Are you sure?',
                     text: 'This record will be permanantly deleted!',
@@ -314,7 +314,7 @@
                     buttons: ["Cancel", "Yes"],
                 }).then(function(value) {
                     if (value == true) {
-                        window.location.replace("blockscenariotwo/" + id);
+                        window.location.replace("blockscenariotwo/" + ent_id);
                     }
                 });
             });

@@ -16,13 +16,15 @@ use SimpleXMLElement;
 use App\Models\ScenarioFive;
 use App\Models\EmployeeDetail;
 use App\Models\LogXMLGenActivity;
+use App\Models\DirectorIdDetail;
+use App\Models\SignatoryDetail;
 
 class ScenarioFiveAllController extends Controller
 {
     //
     function __construct()
     {
-        $this->middleware('permission:scenario-five-all-list|scenario-five-all-edit|scenario-five-all-delete', ['only' => ['list']]);
+        $this->middleware('permission:scenario-five-all-list|scenario-five-all-edit|scenario-five-all-delete|scenario-five-delete', ['only' => ['list']]);
         $this->middleware('permission:scenario-five-all-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:scenario-five-all-delete', ['only' => ['destroy']]);
     }
@@ -30,7 +32,7 @@ class ScenarioFiveAllController extends Controller
     public function list(Request $request)
     {
         if ($request->ajax()) {
-            $data = LogXMLGenActivity::select('*')->where('scenario_no',5)->orderBy('created_at', 'desc')->get();
+            $data = LogXMLGenActivity::select('*')->where('scenario_no',5)->where('is_delete', 0)->orderBy('created_at', 'desc')->get();
             //var_dump($data); exit();
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -43,46 +45,22 @@ class ScenarioFiveAllController extends Controller
                     $btn = '<a href="' . $edit_url . '"><i class="fa fa-edit"></i></a>';
                     return $btn;
                  })
-
-                 ->rawColumns(['excel','edit'])
+                 ->addColumn('blockscenariofivexml', 'adminpanel.generate_xml.scenario_five.all.actionsBlockXml')
+                 ->addColumn('xmlsubmitted', function ($row) {
+                     if ($row->status == "Y") {
+                         $status = 'fa fa-check';
+                         $btn = '<a href="changestatus-scenario-five-all-xml/' . $row->id . '/' . $row->cEnable . '"><i class="' . $status . '"></i></a>';
+                     } else {
+                         $status = 'fa fa-remove';
+                         $btn = 'Submitted';
+                     }
+                     return $btn;
+                 })
+                 ->rawColumns(['excel', 'edit', 'blockscenariofivexml', 'xmlsubmitted'])
                 ->make(true);
         }
 
         return view('adminpanel.generate_xml.scenario_five.all.list');
-    }
-
-    public function datalist(Request $request, $id)
-    {
-        $ID = decrypt($id);
-        $log_data = LogXMLGenActivity::select('*')->where('id', $ID)->where('scenario_no',5)->first();
-        $from_date = $log_data->from_date;
-        $to_date = $log_data->to_date;
-        $xml_type = $log_data->xml_type;
-
-        if ($request->ajax()) {
-            $data = ScenarioFive::select('*')->where('is_delete', '0')->where('xml_gen_status', 'N')->whereBetween('date_transaction', [$log_data->from_date, $log_data->to_date])->orderBy('id', 'asc')->get(); // xml_gen_status', 'N' => Y
-            //var_dump($data); exit();
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('edit', function ($row) {
-                    $edit_url = url('/edit-scenario-five-all/' . encrypt($row->id));
-                    $btn = '<a href="' . $edit_url . '"><i class="fa fa-edit"></i></a>';
-                    return $btn;
-                 })
-                 ->addColumn('activation', function($row){
-                     if ( $row->status == "Y" )
-                         $status ='fa fa-check';
-                     else
-                         $status ='fa fa-remove';
-                     $btn = '<a href="changestatus-scenario-five-all/'.$row->id.'/'.$row->cEnable.'"><i class="'.$status.'"></i></a>';
-                     return $btn;
-                 })
-                 ->addColumn('blockscenariofive', 'adminpanel.generate_xml.scenario_five.all.actionsBlock')
-                 ->rawColumns(['edit','activation','blockscenariofive'])
-                ->make(true);
-        }
-
-        return view('adminpanel.generate_xml.scenario_five.all.datalist', ['log_id' => $id , 'from_date' => $from_date , 'to_date' => $to_date , 'xml_type' => $xml_type]);
     }
 
     /**
@@ -93,14 +71,117 @@ class ScenarioFiveAllController extends Controller
      */
     public function edit($id)
     {
-        // die(decrypt($id));
-        //
-        $ID = decrypt($id);
-        $info = ScenarioFive::where('id', '=', $ID)->first();
+        try {
+            // dd($id);
+            $ID = decrypt($id);
+            // dd($entity_id);
 
+            $info = ScenarioFive::findOrFail($ID); // Using findOrFail to throw an exception if not found
+            $directors = DirectorIdDetail::where('entity_id', $ID)->where('scenario_no', 5)->get();
+            $signatories = SignatoryDetail::where('entity_id', $ID)->where('scenario_no', 5)->get();
 
-        return view('adminpanel.generate_xml.scenario_five.all.edit', ['data' => $info]);
+            return view('adminpanel.generate_xml.scenario_five.all.edit', [
+                'data' => $info,
+                'directors' => $directors,
+                'signatories' => $signatories
+            ]);
+        } catch (\Exception $e) {
+            dd($e);
+            // Handle exception (e.g., log it, show a user-friendly message, etc.)
+            // return redirect()->route('some.route')->withErrors('Error retrieving data.');
+        }
     }
+
+    public function blockXML(Request $request)
+    {
+        $request->validate([
+            // 'status' => 'required'
+        ]);
+
+        $data =  LogXMLGenActivity::find($request->id);
+        $data->is_delete = 1;
+        $data->save();
+        $id = $data->id;
+
+        $from_date = $data->from_date;
+        $to_date = $data->to_date;
+
+         // Run the update query using the ScenarioOne model
+         ScenarioFive::where('xml_gen_status', 'Y')
+            ->whereBetween('date_transaction', [$from_date, $to_date])
+            ->update(['xml_gen_status' => 'N']);
+
+        \LogActivity::addToLog('Scenario Five XML Record deleted(' . $id . ').');
+
+        return redirect()->route('scenario-five-all-list')
+            ->with('success', 'Record deleted successfully.');
+    }
+
+    public function activationXml(Request $request)
+    {
+        $data =  LogXMLGenActivity::find($request->id);
+
+        if ($data->status == "Y") {
+
+            $data->status = 'N';
+            $data->save();
+            $id = $data->id;
+
+            \LogActivity::addToLog('Scenario Five Record Submitted to GoAML(' . $id . ').');
+
+            return redirect()->route('scenario-five-all-list')
+                ->with('success', 'Record deactivate successfully.');
+        }
+    }
+
+
+
+    // ******************************** Edit page functions***********************
+
+    public function datalist(Request $request, $id)
+    {
+        $ID = decrypt($id);
+        $log_data = LogXMLGenActivity::select('*')->where('id', $ID)->where('scenario_no',5)->first();
+        $from_date = $log_data->from_date;
+        $to_date = $log_data->to_date;
+        $xml_type = $log_data->xml_type;
+
+        if ($request->ajax()) {
+            $data = ScenarioFive::select('scenario_5_trans_details.id as ent_id',
+                            'scenario_5_trans_details.status as trans_status',
+                            'scenario_5_trans_details.*')
+                ->distinct()  // Use distinct to avoid duplicates
+                ->leftJoin('signatory_details', 'scenario_5_trans_details.id', '=', 'signatory_details.entity_id')
+                ->leftJoin('director_details', 'scenario_5_trans_details.id', '=', 'director_details.entity_id')
+                ->where('scenario_5_trans_details.is_delete', 0)
+                ->where('scenario_5_trans_details.xml_gen_status', 'N')
+                ->whereBetween('scenario_5_trans_details.date_transaction', [$log_data->from_date, $log_data->to_date])
+                ->orderBy('scenario_5_trans_details.id', 'asc')
+                ->get();
+            //var_dump($data); exit();
+            return Datatables::of($data)
+                ->addIndexColumn()
+                ->addColumn('edit', function ($row) {
+                    $edit_url = url('/edit-scenario-five-all/' . encrypt($row->ent_id));
+                    $btn = '<a href="' . $edit_url . '"><i class="fa fa-edit"></i></a>';
+                    return $btn;
+                 })
+                 ->addColumn('activation', function($row){
+                     if ( $row->trans_status == "Y" )
+                         $status ='fa fa-check';
+                     else
+                         $status ='fa fa-remove';
+                     $btn = '<a href="changestatus-scenario-five-all/'.$row->ent_id.'/'.$row->cEnable.'"><i class="'.$status.'"></i></a>';
+                     return $btn;
+                 })
+                 ->addColumn('blockscenariofive', 'adminpanel.generate_xml.scenario_five.all.actionsBlock')
+                 ->rawColumns(['edit','activation','blockscenariofive'])
+                ->make(true);
+        }
+
+        return view('adminpanel.generate_xml.scenario_five.all.datalist', ['log_id' => $id , 'from_date' => $from_date , 'to_date' => $to_date , 'xml_type' => $xml_type]);
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -119,22 +200,36 @@ class ScenarioFiveAllController extends Controller
         $data->update($input);
 
         $id = $data->id;
+        // Handling directors
+        $directors = $request->input('directors');
+        if (!empty($directors)) {
+            foreach ($directors as $directorData) {
+                if (isset($directorData['id'])) {
+                    $director = DirectorIdDetail::find($directorData['id']);
+                    $director->update($directorData);
+                } else {
+                    DirectorIdDetail::create($directorData + ['entity_id' => $id]);
+                }
+            }
+        }
+
+        // Handling signatories
+        $signatories = $request->input('signatories');
+        if (!empty($signatories)) {
+            foreach ($signatories as $signatoryData) {
+                if (isset($signatoryData['id'])) {
+                    $signatory = SignatoryDetail::find($signatoryData['id']);
+                    $signatory->update($signatoryData);
+                } else {
+                    SignatoryDetail::create($signatoryData + ['entity_id' => $id]);
+                }
+            }
+        }
 
 
         \LogActivity::addToLog('Scenario Five Record updated('.$id.').');
 
         return redirect()->route('scenario-five-all-list')->with('success', 'Record updated successfully.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function activation(Request $request)
@@ -168,9 +263,6 @@ class ScenarioFiveAllController extends Controller
 
     public function block(Request $request)
     {
-        $request->validate([
-            // 'status' => 'required'
-        ]);
 
         $data =  ScenarioFive::find($request->id);
         $data->is_delete = 1;
@@ -198,7 +290,7 @@ class ScenarioFiveAllController extends Controller
 
         $data = ScenarioFive::select('rentity_id', 'rentity_branch', 'submission_code', 'report_code', 'entity_reference', 'submission_date', 'currency_code_local')
             ->whereBetween('date_transaction', [$from_date, $to_date])
-            ->where('xml_gen_status', '=', 'N')
+            ->where('xml_gen_status', '=', 'Y')
             ->where('is_delete', '=', 0)
             ->where('status', '=', 'Y')
             ->where('scenario_type', $scenario_type)
@@ -223,6 +315,12 @@ class ScenarioFiveAllController extends Controller
         $root = $xmlDoc->createElement('report');
         $xmlDoc->appendChild($root);
 
+        // Get current date and time in your preferred format
+        $currentDateTime = date('YmdHis'); // YearMonthDayHourMinuteSecond
+
+        $entity_reference = $data->report_code . $currentDateTime;
+        // dd($entity_reference);
+
         // Add report_info section
         // $reportInfo = $xmlDoc->createElement('report_info');
 
@@ -230,10 +328,10 @@ class ScenarioFiveAllController extends Controller
         $root->appendChild($xmlDoc->createElement('rentity_branch', $data->rentity_branch));
         $root->appendChild($xmlDoc->createElement('submission_code', $data->submission_code));
         $root->appendChild($xmlDoc->createElement('report_code', $data->report_code));
-        $root->appendChild($xmlDoc->createElement('entity_reference', $data->entity_reference));
+        $root->appendChild($xmlDoc->createElement('entity_reference', $entity_reference));
         $currentDate = date('Y-m-d\TH:i:s'); // Get the current date and time in the format YYYY-MM-DDTHH:MM:SS
         $root->appendChild($xmlDoc->createElement('submission_date', $currentDate));
-        if($data->report_code == 'CTR' || $data->report_code == 'EFT' || $data->report_code == 'IFT ')
+        if($data->report_code == 'CTR' || $data->report_code == 'EFT' || $data->report_code == 'IFT')
         {
             $root->appendChild($xmlDoc->createElement('currency_code_local', 'LKR'));
         }
@@ -390,6 +488,9 @@ class ScenarioFiveAllController extends Controller
 
             // Iterate over each transaction
             foreach ($trans as $item) {
+                // Update the entity_reference in the database for this transaction
+                $item->entity_reference = $entity_reference;
+                $item->save(); // Save the updated record to the database
                 // Create a <t_from_my_client> element
                 $transaction = $xmlDoc->createElement('transaction');
 
@@ -429,7 +530,7 @@ class ScenarioFiveAllController extends Controller
                 }
                 if($item->from_account_non_bank_institution !== null && $item->from_account_non_bank_institution !== '')
                 {
-                    $from_account->appendChild($xmlDoc->createElement('non_bank_institution', $item->from_account_non_bank_institution));
+                    $from_account->appendChild($xmlDoc->createElement('non_bank_institution', strtolower($item->from_account_non_bank_institution)));
                 }
                 if($item->from_account_branch !== null && $item->from_account_branch !== '')
                 {
@@ -493,80 +594,89 @@ class ScenarioFiveAllController extends Controller
                     $t_entity->appendChild($xmlDoc->createElement('incorporation_country_code', $item->from_account_incorporation_country_code));
                 }
 
-                $director_id = $xmlDoc->createElement('director_id');
+                $director = DirectorIdDetail::where('entity_id', $item->id)
+                    ->where('scenario_no', 5)
+                    ->where('entity_type', 'from')
+                    ->get();
 
-                if($item->from_account_director_gender !== null && $item->from_account_director_gender !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('gender', $item->from_account_director_gender));
-                }
-                if($item->from_account_director_title !== null && $item->from_account_director_title !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('title', $item->from_account_director_title));
-                }
-                if($item->from_account_director_first_name !== null && $item->from_account_director_first_name !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('first_name', $item->from_account_director_first_name));
-                }
-                if($item->from_account_director_last_name !== null && $item->from_account_director_last_name !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('last_name', $item->from_account_director_last_name));
-                }
-                if($item->from_account_director_birthdate !== null && $item->from_account_director_birthdate !== '')
-                {
-                    $dateofbirth = new DateTime($item->from_account_director_birthdate);
-                    $formattedDateofbirth = $dateofbirth->format('Y-m-d\TH:i:s');
-                    $director_id->appendChild($xmlDoc->createElement('birthdate', $formattedDateofbirth));
-                }
-                if($item->from_account_director_ssn !== null && $item->from_account_director_ssn !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('ssn', $item->from_account_director_ssn));
-                }
-                if($item->from_account_director_passport_number !== null && $item->from_account_director_passport_number !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('passport_number', $item->from_account_director_passport_number));
-                }
-                if($item->from_account_director_passport_country !== null && $item->from_account_director_passport_country !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('passport_country', $item->from_account_director_passport_country));
-                }
-                if($item->from_account_director_nationality1 !== null && $item->from_account_director_nationality1 !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('nationality1', $item->from_account_director_nationality1));
-                }
-                if($item->from_account_director_residence !== null && $item->from_account_director_residence !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('residence', $item->from_account_director_residence));
-                }
-                $addresses = $xmlDoc->createElement('addresses');
-                    $address = $xmlDoc->createElement('address');
-                        if($item->from_account_director_address_type !== null && $item->from_account_director_address_type !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('address_type', $item->from_account_director_address_type));
-                        }
-                        if($item->from_account_director_address !== null && $item->from_account_director_address !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('address', $item->from_account_director_address));
-                        }
-                        if($item->from_account_director_city !== null && $item->from_account_director_city !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('city', $item->from_account_director_city));
-                        }
-                        if($item->from_account_director_country_code !== null && $item->from_account_director_country_code !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('country_code', $item->from_account_director_country_code));
-                        }
-                    $addresses->appendChild($address);
-                $director_id->appendChild($addresses);
+                foreach ($director as $dr_item) {
 
-                if($item->from_account_director_occupation !== null && $item->from_account_director_occupation !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('occupation', $item->from_account_director_occupation));
-                }
-                if($item->from_account_director_role !== null && $item->from_account_director_role !== '')
-                {
-                    $director_id->appendChild($xmlDoc->createElement('role', $item->from_account_director_role));
-                }
+                    $director_id = $xmlDoc->createElement('director_id');
 
+                    if($dr_item->gender !== null && $dr_item->gender !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('gender', $dr_item->gender));
+                    }
+                    if($dr_item->title !== null && $dr_item->title !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('title', $dr_item->title));
+                    }
+                    if($dr_item->first_name !== null && $dr_item->first_name !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('first_name', $dr_item->first_name));
+                    }
+                    if($dr_item->last_name !== null && $dr_item->last_name !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('last_name', $dr_item->last_name));
+                    }
+                    if($dr_item->birthdate !== null && $dr_item->birthdate !== '')
+                    {
+                        $dateofbirth = new DateTime($dr_item->birthdate);
+                        $formattedDateofbirth = $dateofbirth->format('Y-m-d\TH:i:s');
+                        $director_id->appendChild($xmlDoc->createElement('birthdate', $formattedDateofbirth));
+                    }
+                    if($dr_item->ssn !== null && $dr_item->ssn !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('ssn', $dr_item->ssn));
+                    }
+                    if($dr_item->passport_number !== null && $dr_item->passport_number !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('passport_number', $dr_item->passport_number));
+                    }
+                    if($dr_item->passport_country !== null && $dr_item->passport_country !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('passport_country', $dr_item->passport_country));
+                    }
+                    if($dr_item->nationality1 !== null && $dr_item->nationality1 !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('nationality1', $dr_item->nationality1));
+                    }
+                    if($dr_item->residence !== null && $dr_item->residence !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('residence', $dr_item->residence));
+                    }
+                    $addresses = $xmlDoc->createElement('addresses');
+                        $address = $xmlDoc->createElement('address');
+                            if($dr_item->address_type !== null && $dr_item->address_type !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('address_type', $dr_item->address_type));
+                            }
+                            if($dr_item->address !== null && $dr_item->address !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('address', $dr_item->address));
+                            }
+                            if($dr_item->city !== null && $dr_item->city !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('city', $dr_item->city));
+                            }
+                            if($dr_item->country_code !== null && $dr_item->country_code !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('country_code', $dr_item->country_code));
+                            }
+                        $addresses->appendChild($address);
+                    $director_id->appendChild($addresses);
+
+                    if($dr_item->occupation !== null && $dr_item->occupation !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('occupation', $dr_item->occupation));
+                    }
+                    if($dr_item->role !== null && $dr_item->role !== '')
+                    {
+                        $director_id->appendChild($xmlDoc->createElement('role', $dr_item->role));
+                    }
+
+                    $t_entity->appendChild($director_id);
+                }
                 $from_account->appendChild($t_entity);
 
                 if($item->status_code !== null && $item->status_code !== '')
@@ -598,7 +708,7 @@ class ScenarioFiveAllController extends Controller
 
                 $to_account->appendChild($xmlDoc->createElement('institution_name', $item->to_account_institution_name));
                 $to_account->appendChild($xmlDoc->createElement('swift', $item->to_account_swift));
-                $to_account->appendChild($xmlDoc->createElement('non_bank_institution', $item->to_account_non_bank_institution));
+                $to_account->appendChild($xmlDoc->createElement('non_bank_institution', strtolower($item->to_account_non_bank_institution)));
                 $to_account->appendChild($xmlDoc->createElement('account', $item->to_account_account));
                 $to_account->appendChild($xmlDoc->createElement('currency_code', $item->to_account_currency_code));
 
@@ -630,6 +740,9 @@ class ScenarioFiveAllController extends Controller
 
             // Iterate over each transaction
             foreach ($trans as $item) {
+                // Update the entity_reference in the database for this transaction
+                $item->entity_reference = $entity_reference;
+                $item->save(); // Save the updated record to the database
                 // Create a <t_from_my_client> element
                 $transaction = $xmlDoc->createElement('transaction');
 
@@ -661,90 +774,97 @@ class ScenarioFiveAllController extends Controller
 
                 $from_account->appendChild($xmlDoc->createElement('institution_name', $item->from_account_institution_name));
                 $from_account->appendChild($xmlDoc->createElement('swift', $item->from_account_swift));
-                $from_account->appendChild($xmlDoc->createElement('non_bank_institution', $item->from_account_non_bank_institution));
+                $from_account->appendChild($xmlDoc->createElement('non_bank_institution', strtolower($item->from_account_non_bank_institution)));
                 $from_account->appendChild($xmlDoc->createElement('branch', $item->from_account_branch));
                 $from_account->appendChild($xmlDoc->createElement('account', $item->from_account_account));
                 $from_account->appendChild($xmlDoc->createElement('currency_code', $item->from_account_currency_code));
                 $from_account->appendChild($xmlDoc->createElement('personal_account_type', $item->from_account_personal_account_type));
 
-                $signatory = $xmlDoc->createElement('signatory');
+                $signatoryfrom = SignatoryDetail::where('entity_id', $item->id)
+                    ->where('scenario_no', 5)
+                    ->where('entity_type', 'from')
+                    ->get();
+                foreach ($signatoryfrom as $signatory_item) {
 
-                if($item->from_account_signatory_is_primary !== null && $item->from_account_signatory_is_primary !== '')
-                {
-                    $signatory->appendChild($xmlDoc->createElement('is_primary', $item->from_account_signatory_is_primary));
-                }
+                    $signatory = $xmlDoc->createElement('signatory');
 
-                $t_person = $xmlDoc->createElement('t_person');
+                    if($signatory_item->is_primary !== null && $signatory_item->is_primary !== '')
+                    {
+                        $signatory->appendChild($xmlDoc->createElement('is_primary', strtolower($signatory_item->is_primary)));
+                    }
 
-                if($item->from_account_signatory_gender !== null && $item->from_account_signatory_gender !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('gender', $item->from_account_signatory_gender));
-                }
-                if($item->from_account_signatory_title !== null && $item->from_account_signatory_title !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('title', $item->from_account_signatory_title));
-                }
-                if($item->from_account_signatory_first_name !== null && $item->from_account_signatory_first_name !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('first_name', $item->from_account_signatory_first_name));
-                }
-                if($item->from_account_signatory_last_name !== null && $item->from_account_signatory_last_name !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('last_name', $item->from_account_signatory_last_name));
-                }
-                if($item->from_account_signatory_birthdate !== null && $item->from_account_signatory_birthdate !== '')
-                {
-                    $dateofbirth = new DateTime($item->from_account_signatory_birthdate);
-                    $formattedDateofbirth = $dateofbirth->format('Y-m-d\TH:i:s');
-                    $t_person->appendChild($xmlDoc->createElement('birthdate', $formattedDateofbirth));
-                }
-                if($item->from_account_signatory_ssn !== null && $item->from_account_signatory_ssn !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('ssn', $item->from_account_signatory_ssn));
-                }
-                if($item->from_account_signatory_nationality1 !== null && $item->from_account_signatory_nationality1 !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('nationality1', $item->from_account_signatory_nationality1));
-                }
-                if($item->from_account_signatory_residence !== null && $item->from_account_signatory_residence !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('residence', $item->from_account_signatory_residence));
-                }
-                $addresses = $xmlDoc->createElement('addresses');
-                    $address = $xmlDoc->createElement('address');
-                        if($item->from_account_signatory_address_type !== null && $item->from_account_signatory_address_type !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('address_type', $item->from_account_signatory_address_type));
-                        }
-                        if($item->from_account_signatory_address !== null && $item->from_account_signatory_address !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('address', $item->from_account_signatory_address));
-                        }
-                        if($item->from_account_signatory_city !== null && $item->from_account_signatory_city !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('city', $item->from_account_signatory_city));
-                        }
-                        if($item->from_account_signatory_country_code !== null && $item->from_account_signatory_country_code !== '')
-                        {
-                            $address->appendChild($xmlDoc->createElement('country_code', $item->from_account_signatory_country_code));
-                        }
-                    $addresses->appendChild($address);
-                $t_person->appendChild($addresses);
+                    $t_person = $xmlDoc->createElement('t_person');
 
-                if($item->from_account_signatory_occupation !== null && $item->from_account_signatory_occupation !== '')
-                {
-                    $t_person->appendChild($xmlDoc->createElement('occupation', $item->from_account_signatory_occupation));
+                    if($signatory_item->gender !== null && $signatory_item->gender !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('gender', $signatory_item->gender));
+                    }
+                    if($signatory_item->title !== null && $signatory_item->title !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('title', $signatory_item->title));
+                    }
+                    if($signatory_item->first_name !== null && $signatory_item->first_name !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('first_name', $signatory_item->first_name));
+                    }
+                    if($signatory_item->last_name !== null && $signatory_item->last_name !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('last_name', $signatory_item->last_name));
+                    }
+                    if($signatory_item->birthdate !== null && $signatory_item->birthdate !== '')
+                    {
+                        $dateofbirth = new DateTime($signatory_item->birthdate);
+                        $formattedDateofbirth = $dateofbirth->format('Y-m-d\TH:i:s');
+                        $t_person->appendChild($xmlDoc->createElement('birthdate', $formattedDateofbirth));
+                    }
+                    if($signatory_item->ssn !== null && $signatory_item->ssn !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('ssn', $signatory_item->ssn));
+                    }
+                    if($signatory_item->nationality1 !== null && $signatory_item->nationality1 !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('nationality1', $signatory_item->nationality1));
+                    }
+                    if($signatory_item->residence !== null && $signatory_item->residence !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('residence', $signatory_item->residence));
+                    }
+                    $addresses = $xmlDoc->createElement('addresses');
+                        $address = $xmlDoc->createElement('address');
+                            if($signatory_item->address_type !== null && $signatory_item->address_type !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('address_type', $signatory_item->address_type));
+                            }
+                            if($signatory_item->address !== null && $signatory_item->address !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('address', $signatory_item->address));
+                            }
+                            if($signatory_item->city !== null && $signatory_item->city !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('city', $signatory_item->city));
+                            }
+                            if($signatory_item->country_code !== null && $signatory_item->country_code !== '')
+                            {
+                                $address->appendChild($xmlDoc->createElement('country_code', $signatory_item->country_code));
+                            }
+                        $addresses->appendChild($address);
+                    $t_person->appendChild($addresses);
+
+                    if($signatory_item->occupation !== null && $signatory_item->occupation !== '')
+                    {
+                        $t_person->appendChild($xmlDoc->createElement('occupation', $signatory_item->occupation));
+                    }
+
+                    // Append the <from_person> element to the <t_from_my_client> element
+                    $signatory->appendChild($t_person);
+
+                    if($signatory_item->role !== null && $signatory_item->role !== '')
+                    {
+                        $signatory->appendChild($xmlDoc->createElement('role', $signatory_item->role));
+                    }
+
+                    $from_account->appendChild($signatory);
                 }
-
-                // Append the <from_person> element to the <t_from_my_client> element
-                $signatory->appendChild($t_person);
-
-                if($item->from_account_signatory_role !== null && $item->from_account_signatory_role !== '')
-                {
-                    $signatory->appendChild($xmlDoc->createElement('role', $item->from_account_signatory_role));
-                }
-
-                $from_account->appendChild($signatory);
 
                 if($item->status_code !== null && $item->status_code !== '')
                 {
@@ -784,7 +904,7 @@ class ScenarioFiveAllController extends Controller
                 }
                 if($item->to_account_non_bank_institution !== null && $item->to_account_non_bank_institution !== '')
                 {
-                    $to_account->appendChild($xmlDoc->createElement('non_bank_institution', $item->to_account_non_bank_institution));
+                    $to_account->appendChild($xmlDoc->createElement('non_bank_institution', strtolower($item->to_account_non_bank_institution)));
                 }
                 if($item->to_account_account !== null && $item->to_account_account !== '')
                 {
@@ -834,10 +954,11 @@ class ScenarioFiveAllController extends Controller
         }
         $root->appendChild($reportIndicators);
 
-        // $data->update(['xml_gen_status' => 'Y']);
+        $formatted_from_date = str_replace('-', '', $from_date);
+        $formatted_to_date = str_replace('-', '', $to_date);
 
         // Save the XML to a file
-        $fileName = 'files/xmlfile_' . time() . '_scenario_five.xml';
+        $fileName = 'files/xmlfile_' . $formatted_from_date . '_' . $formatted_to_date . '_' . time() . '_scenario_five.xml';
         $xmlDoc->save(storage_path('app/public/' . $fileName));
         $scenario_no = 5;
 
@@ -873,7 +994,8 @@ class ScenarioFiveAllController extends Controller
 
         $excel_data = ScenarioFive::select('*')
             ->where('is_delete', '0')
-            ->where('xml_gen_status', 'N')//need to change for Y
+            ->where('status', '=', 'Y')
+            ->where('xml_gen_status', 'N') // Changed to 'Y'
             ->where('scenario_type', $log_data->xml_type)
             ->whereBetween('date_transaction', [$log_data->from_date, $log_data->to_date])
             ->orderBy('id', 'asc')
@@ -889,7 +1011,7 @@ class ScenarioFiveAllController extends Controller
             "Expires" => "0"
         ];
 
-        $columns = [
+        $base_columns = [
             'scenario_type', 'rentity_id', 'rentity_branch', 'submission_code', 'report_code', 'entity_reference',
             'submission_date', 'currency_code_local', 'transactionnumber', 'internal_ref_number', 'transaction_location',
             'transaction_description', 'date_transaction', 'value_date', 'transmode_code', 'amount_local',
@@ -897,52 +1019,106 @@ class ScenarioFiveAllController extends Controller
             'from_account_branch', 'from_account_account', 'from_account_currency_code', 'from_account_personal_account_type',
             'from_account_name', 'from_account_incorporation_legal_form', 'from_account_incorporation_number',
             'from_account_business', 'from_account_address_type', 'from_account_address', 'from_account_city',
-            'from_account_country_code', 'from_account_incorporation_country_code', 'from_account_director_gender',
-            'from_account_director_title', 'from_account_director_first_name', 'from_account_director_last_name',
-            'from_account_director_birthdate', 'from_account_director_ssn', 'from_account_director_passport_number',
-            'from_account_director_passport_country', 'from_account_director_nationality1', 'from_account_director_residence',
-            'from_account_director_address_type', 'from_account_director_address', 'from_account_director_city',
-            'from_account_director_country_code', 'from_account_director_occupation', 'from_account_director_role',
-            'status_code', 'from_country', 'to_funds_code', 'to_account_institution_name', 'to_account_swift',
-            'to_account_non_bank_institution', 'to_account_account', 'to_account_currency_code', 'to_country',
-            'from_account_signatory_is_primary', 'from_account_signatory_gender', 'from_account_signatory_title',
-            'from_account_signatory_first_name', 'from_account_signatory_last_name', 'from_account_signatory_birthdate',
-            'from_account_signatory_ssn', 'from_account_signatory_nationality1', 'from_account_signatory_residence',
-            'from_account_signatory_address_type', 'from_account_signatory_address', 'from_account_signatory_city',
-            'from_account_signatory_country_code', 'from_account_signatory_occupation', 'from_account_signatory_role',
-            'report_indicator'
+            'from_account_country_code', 'from_account_incorporation_country_code', 'status_code', 'from_country',
+            'to_funds_code', 'to_account_institution_name', 'to_account_swift', 'to_account_non_bank_institution',
+            'to_account_account', 'to_account_currency_code', 'to_country'
         ];
 
+        $columns = $base_columns;
 
-        $callback = function() use ($excel_data, $columns) {
+        // Determine maximum number of directors and signatories for dynamic column creation
+        $max_directors = 0;
+        $max_signatories = 0;
+
+        foreach ($excel_data as $row) {
+            $num_directors = DirectorIdDetail::where('entity_id', $row->id)->where('scenario_no',5)->count();
+            $num_signatories = SignatoryDetail::where('entity_id', $row->id)->where('scenario_no',5)->count();
+
+            if ($num_directors > $max_directors) {
+                $max_directors = $num_directors;
+            }
+
+            if ($num_signatories > $max_signatories) {
+                $max_signatories = $num_signatories;
+            }
+        }
+
+        // Add dynamic columns for directors and signatories
+        for ($i = 1; $i <= $max_directors; $i++) {
+            $columns = array_merge($columns, [
+                "from_account_director_{$i}_gender", "from_account_director_{$i}_title", "from_account_director_{$i}_first_name",
+                "from_account_director_{$i}_last_name", "from_account_director_{$i}_birthdate", "from_account_director_{$i}_ssn",
+                "from_account_director_{$i}_passport_number", "from_account_director_{$i}_passport_country", "from_account_director_{$i}_nationality1",
+                "from_account_director_{$i}_residence", "from_account_director_{$i}_address_type", "from_account_director_{$i}_address",
+                "from_account_director_{$i}_city", "from_account_director_{$i}_country_code", "from_account_director_{$i}_occupation",
+                "from_account_director_{$i}_role"
+            ]);
+        }
+
+        for ($i = 1; $i <= $max_signatories; $i++) {
+            $columns = array_merge($columns, [
+                "from_account_signatory_{$i}_is_primary", "from_account_signatory_{$i}_gender", "from_account_signatory_{$i}_title",
+                "from_account_signatory_{$i}_first_name", "from_account_signatory_{$i}_last_name", "from_account_signatory_{$i}_birthdate",
+                "from_account_signatory_{$i}_ssn", "from_account_signatory_{$i}_passport_number", "from_account_signatory_{$i}_passport_country",
+                "from_account_signatory_{$i}_nationality1", "from_account_signatory_{$i}_residence", "from_account_signatory_{$i}_address_type",
+                "from_account_signatory_{$i}_address", "from_account_signatory_{$i}_city", "from_account_signatory_{$i}_country_code",
+                "from_account_signatory_{$i}_occupation", "from_account_signatory_{$i}_role"
+            ]);
+        }
+
+        $callback = function() use ($excel_data, $columns, $max_directors, $max_signatories) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
             foreach ($excel_data as $row) {
-                fputcsv($file, [
+                $rowData = [
                     $row->scenario_type, $row->rentity_id, $row->rentity_branch, $row->submission_code, $row->report_code,
                     $row->entity_reference, $row->submission_date, $row->currency_code_local, $row->transactionnumber,
                     $row->internal_ref_number, $row->transaction_location, $row->transaction_description, $row->date_transaction,
                     $row->value_date, $row->transmode_code, $row->amount_local, $row->from_funds_code, $row->from_account_institution_name,
                     $row->from_account_swift, $row->from_account_non_bank_institution, $row->from_account_branch,
-                    $row->from_account_account, $row->from_account_currency_code, $row->from_account_personal_account_type,
+                    "' . $row->from_account_account . '", $row->from_account_currency_code, $row->from_account_personal_account_type,
                     $row->from_account_name, $row->from_account_incorporation_legal_form, $row->from_account_incorporation_number,
                     $row->from_account_business, $row->from_account_address_type, $row->from_account_address, $row->from_account_city,
-                    $row->from_account_country_code, $row->from_account_incorporation_country_code, $row->from_account_director_gender,
-                    $row->from_account_director_title, $row->from_account_director_first_name, $row->from_account_director_last_name,
-                    $row->from_account_director_birthdate, $row->from_account_director_ssn, $row->from_account_director_passport_number,
-                    $row->from_account_director_passport_country, $row->from_account_director_nationality1, $row->from_account_director_residence,
-                    $row->from_account_director_address_type, $row->from_account_director_address, $row->from_account_director_city,
-                    $row->from_account_director_country_code, $row->from_account_director_occupation, $row->from_account_director_role,
-                    $row->status_code, $row->from_country, $row->to_funds_code, $row->to_account_institution_name, $row->to_account_swift,
-                    $row->to_account_non_bank_institution, $row->to_account_account, $row->to_account_currency_code, $row->to_country,
-                    $row->from_account_signatory_is_primary, $row->from_account_signatory_gender, $row->from_account_signatory_title,
-                    $row->from_account_signatory_first_name, $row->from_account_signatory_last_name, $row->from_account_signatory_birthdate,
-                    $row->from_account_signatory_ssn, $row->from_account_signatory_nationality1, $row->from_account_signatory_residence,
-                    $row->from_account_signatory_address_type, $row->from_account_signatory_address, $row->from_account_signatory_city,
-                    $row->from_account_signatory_country_code, $row->from_account_signatory_occupation, $row->from_account_signatory_role,
-                    $row->report_indicator
-                ]);
+                    $row->from_account_country_code, $row->from_account_incorporation_country_code, $row->status_code, $row->from_country,
+                    $row->to_funds_code, $row->to_account_institution_name, $row->to_account_swift, $row->to_account_non_bank_institution,
+                    "' . $row->to_account_account . '", $row->to_account_currency_code, $row->to_country
+                ];
+
+                // Add director details
+                $directors = DirectorIdDetail::where('entity_id', $row->id)->where('scenario_no',5)->get();
+                for ($i = 0; $i < $max_directors; $i++) {
+                    if (isset($directors[$i])) {
+                        $director = $directors[$i];
+                        $rowData = array_merge($rowData, [
+                            $director->gender, $director->title, $director->first_name, $director->last_name, $director->birthdate,
+                            $director->ssn, $director->passport_number, $director->passport_country, $director->nationality1, $director->residence,
+                            $director->address_type, $director->address, $director->city, $director->country_code, $director->occupation, $director->role
+                        ]);
+                    } else {
+                        // Add empty cells if no director exists at this position
+                        $rowData = array_merge($rowData, array_fill(0, 15, ''));
+                    }
+                }
+
+                // Add signatory details
+                $signatories = SignatoryDetail::where('entity_id', $row->id)->where('scenario_no',5)->get();
+                for ($i = 0; $i < $max_signatories; $i++) {
+                    if (isset($signatories[$i])) {
+                        $signatory = $signatories[$i];
+                        $rowData = array_merge($rowData, [
+                            $signatory->is_primary, $signatory->gender, $signatory->title, $signatory->first_name, $signatory->last_name,
+                            $signatory->birthdate, $signatory->ssn, $signatory->passport_number, $signatory->passport_country, $signatory->nationality1,
+                            $signatory->residence, $signatory->address_type, $signatory->address, $signatory->city, $signatory->country_code,
+                            $signatory->occupation, $signatory->role
+                        ]);
+                    } else {
+                        // Add empty cells if no signatory exists at this position
+                        $rowData = array_merge($rowData, array_fill(0, 15, ''));
+                    }
+                }
+
+                fputcsv($file, $rowData);
             }
 
             fclose($file);
@@ -950,4 +1126,5 @@ class ScenarioFiveAllController extends Controller
 
         return Response::stream($callback, 200, $headers);
     }
+
 }

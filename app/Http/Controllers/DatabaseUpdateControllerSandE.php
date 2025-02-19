@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
-class DatabaseUpdateController extends Controller
+class DatabaseUpdateControllerSandE extends Controller
 {
     public function index()
     {
@@ -24,25 +24,11 @@ class DatabaseUpdateController extends Controller
         ]);
 
         $tableMapping = [
-            'S0011' => 'scenario_1_trans_details',
-            'S0022' => 'scenario_2_trans_details',
-            'S0033' => 'scenario_3_trans_details',
-            'S0044' => 'scenario_4_trans_details',
-            'S0055' => 'scenario_5_trans_details',
-            'S0066' => 'scenario_6_trans_details',
             'S0077' => 'scenario_7_trans_details',
-            'S0088' => 'scenario_8_trans_details',
         ];
 
         $scenarioNumbers = [
-            'S0011' => 1,
-            'S0022' => 2,
-            'S0033' => 3,
-            'S0044' => 4,
-            'S0055' => 5,
-            'S0066' => 6,
             'S0077' => 7,
-            'S0088' => 8,
         ];
 
         $serverName = 'etlshragls.hnbfinance.lk,4795';
@@ -108,7 +94,7 @@ class DatabaseUpdateController extends Controller
                         $scenarioNo = $scenarioNumbers[$intermediateTable] ?? null;
 
                         // Fetch related records from SQL Server based on entity_id and scenario_no
-                        $relatedSql = "SELECT * FROM $tableToInsert WHERE entity_id = ? AND is_delete = 0 AND scenario_no = ?";
+                        $relatedSql = "SELECT * FROM signatory_details_S7_S8 WHERE entity_id = ? AND is_delete = 0 AND scenario_no = ?";
                         $relatedStmt = sqlsrv_query($conn, $relatedSql, [$record['ID'], $scenarioNo]);
 
                         if ($relatedStmt === false) {

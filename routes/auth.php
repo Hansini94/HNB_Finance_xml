@@ -33,6 +33,7 @@ use App\Http\Controllers\ScenarioSevenAllController;
 use App\Http\Controllers\ScenarioEightController;
 use App\Http\Controllers\ScenarioEightAllController;
 use App\Http\Controllers\DatabaseUpdateController;
+use App\Http\Controllers\DatabaseUpdateControllerSandE;
 
 
 //backend
@@ -90,6 +91,7 @@ Route::get('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
 
 Route::get('/update-database', [DatabaseUpdateController::class, 'index']);
+Route::get('/update-database-7-8', [DatabaseUpdateControllerSandE::class, 'index']);
 
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
